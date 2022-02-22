@@ -49,9 +49,6 @@ class Paperdl():
                 'arxiv', 'googlescholar',
             ] if target_srcs is None else target_srcs
             search_results = self.search(user_input, target_srcs)
-            if len(search_results) < 1: 
-                self.logger_handle.info('No related papers were found')
-                continue
             # print search results
             title = ['ID', 'Title', 'First Author', 'Source']
             items, records, idx = [], {}, 0
@@ -60,6 +57,9 @@ class Paperdl():
                     items.append([str(idx), value['title'], value['authors'].split(',')[0], value['source']])
                     records.update({str(idx): value})
                     idx += 1
+            if len(items) < 1: 
+                self.logger_handle.info('No related papers were found')
+                continue
             printTable(title, items)
             # download papers
             user_input = self.dealInput('Input the paper ID you want to download: ')

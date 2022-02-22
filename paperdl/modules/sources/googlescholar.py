@@ -6,6 +6,7 @@ Author:
 WeChat public account:
     Charles_pikachu
 '''
+import random
 from .scihub import SciHub
 from bs4 import BeautifulSoup
 
@@ -18,13 +19,25 @@ class GoogleScholar(SciHub):
     '''search paper'''
     def search(self, keyword):
         # search
-        search_url = 'https://scholar.google.com/scholar'
-        params = {
-            'hl': 'en',
-            'as_sdt': '0,5',
-            'q': keyword,
-            'btnG': ''
-        }
+        if self.config.get('area') == 'CN':
+            search_url = random.choice([
+                'https://xs2.dailyheadlines.cc/scholar',
+                'https://scholar.lanfanshu.cn/scholar',
+            ])
+            params = {
+                'hl': 'zh-CN',
+                'as_sdt': '0,33',
+                'q': keyword,
+                'btnG': ''
+            }
+        else:
+            search_url = 'https://scholar.google.com/scholar'
+            params = {
+                'hl': 'en',
+                'as_sdt': '0,5',
+                'q': keyword,
+                'btnG': ''
+            }
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
         }

@@ -2,5 +2,6 @@
     "logfilepath": "paperdl.log",
     "proxies": {},
     "search_size_per_source": 5,
-    "savedir": "papers"
+    "savedir": "papers",
+	"area": "CN"
 }
