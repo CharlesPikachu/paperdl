@@ -18,8 +18,8 @@ class SciHub(Base):
     def __init__(self, config=None, logger_handle=None, **kwargs):
         super(SciHub, self).__init__(config, logger_handle, **kwargs)
         self.source = 'scihub'
-    '''dowload paper'''
-    def dowload(self, paperinfos):
+    '''parse paper infos before dowload paper'''
+    def parseinfosbeforedownload(self, paperinfos):
         sci_sources = [
             'https://sci-hub.st/', 
             'https://sci-hub.ru/',
@@ -45,13 +45,13 @@ class SciHub(Base):
                         continue
             if 'download_url' not in paperinfo: paperinfo['download_url'] = None
             paperinfo['source'] = self.source
-        # start to download
-        super(SciHub, self).download(paperinfos)
+        # return
+        return paperinfos
     '''guess input type'''
     def guessinputtype(self, input_content):
         input_type, doi_pattern = None, re.compile(r'\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'])\S)+)\b')
         if input_content.startswith('http') or input_content.startswith('https'):
-            if input_content.endswith('pdf'): input_type = 'pdf'
+            if '.pdf' in input_content: input_type = 'pdf'
             else: input_type = 'url'
         elif input_content.isdigit(): input_type = 'pmid'
         elif input_content.startswith('doi:') or doi_pattern.match(input_content): input_type = 'doi'

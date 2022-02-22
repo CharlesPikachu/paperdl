@@ -23,6 +23,7 @@ class Base():
         raise NotImplementedError('not to be implemented...')
     '''download paper'''
     def download(self, paperinfos):
+        if hasattr(self, 'parseinfosbeforedownload'): paperinfos = self.parseinfosbeforedownload(paperinfos)
         for paperinfo in paperinfos:
             self.logger_handle.info(f"Downloading {paperinfo['savename']} from {self.source}")
             task = Downloader(paperinfo, self.session)
