@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - name: "Zhenchao Jin"
+title: "Paperdl: Search and download paper from specific websites"
+date-released: 2022-02-22
+url: "https://github.com/CharlesPikachu/paperdl"
+license: MIT License
