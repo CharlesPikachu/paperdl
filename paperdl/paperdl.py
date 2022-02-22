@@ -46,9 +46,12 @@ class Paperdl():
             # search paper
             user_input = self.dealInput('Input the title of the paper: ')
             target_srcs = [
-                'arxiv'
+                'arxiv', 'googlescholar',
             ] if target_srcs is None else target_srcs
             search_results = self.search(user_input, target_srcs)
+            if len(search_results) < 1: 
+                self.logger_handle.info('No related papers were found')
+                continue
             # print search results
             title = ['ID', 'Title', 'First Author', 'Source']
             items, records, idx = [], {}, 0
@@ -94,6 +97,7 @@ class Paperdl():
         supported_sources = {
             'arxiv': Arxiv,
             'scihub': SciHub,
+            'googlescholar': GoogleScholar,
         }
         for key, value in supported_sources.items():
             setattr(self, key, value(copy.deepcopy(self.config), self.logger_handle))
