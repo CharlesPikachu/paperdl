@@ -43,7 +43,10 @@ class Downloader():
         return is_success
     '''set request headers'''
     def __setheaders(self, source):
-        self.scihub_headers = {
+        self.default_headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
         }
-        self.headers = getattr(self, f'{source}_headers')
+        try:
+            self.headers = getattr(self, f'{source}_headers')
+        except:
+            self.headers = self.default_headers

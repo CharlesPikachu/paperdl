@@ -24,7 +24,8 @@ You can star this repository to keep track of the project if it's helpful for yo
 # Support List
 |  Source                                 |   Support Search?  |  Support Download?   |
 |  :----:                                 |   :----:           |  :----:              |
-|  [SciHub](https://sci-hub.st/)          |   ✗                |  ✓                   |
+|  [scihub](https://sci-hub.st/)          |   ✗                |  ✓                   |
+|  [arxiv](https://arxiv.org/)            |   ✓                |  ✓                   |
 
 
 # Install
@@ -46,8 +47,8 @@ run "pip install git+https://github.com/CharlesPikachu/paperdl.git@master"
 ```python
 from paperdl import paperdl
 
-config = {'logfilepath': 'paperdl.log', 'savedir': 'downloaded', 'search_size_per_source': 5, 'proxies': {}}
-target_srcs = []
+config = {'logfilepath': 'paperdl.log', 'savedir': 'papers', 'search_size_per_source': 5, 'proxies': {}}
+target_srcs = ['arxiv']
 client = paperdl.Paperdl(config=config)
 client.run(target_srcs)
 ```
