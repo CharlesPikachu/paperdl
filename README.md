@@ -77,7 +77,6 @@ client.download([paperinfo])
 ```
 
 
-
 # Screenshot
 ![img](./docs/screenshot.gif)
 
