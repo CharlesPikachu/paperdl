@@ -50,8 +50,8 @@ class GoogleScholar(SciHub):
             try:
                 pdf = paper.find('div', class_='gs_ggs gs_fl')
                 link = paper.find('h3', class_='gs_rt')
-                if pdf: input_content = pdf.find('a')['href']
-                elif link.find('a'): input_content = link.find('a')['href']
+                if link.find('a'): input_content = link.find('a')['href']
+                elif pdf: input_content = pdf.find('a')['href']
                 else: continue
                 title = link.text
                 authors = paper.find('div', class_='gs_a').text.split('\xa0')[0]
