@@ -37,6 +37,13 @@ class Paperdl():
     def __init__(self, configpath=None, config=None, **kwargs):
         assert configpath or config, 'configpath or config should be given...'
         self.config = loadConfig(configpath) if config is None else config
+        default_config = {
+            'logfilepath': 'paperdl.log',
+            'search_size_per_source': 5,
+            'savedir': 'papers'
+        }
+        for key, value in default_config.items():
+            if key not in self.config: self.config[key] = value
         self.logger_handle = Logger(self.config['logfilepath'])
         self.initializeAllSources()
     '''run'''
