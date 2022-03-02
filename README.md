@@ -8,6 +8,7 @@
 [![PyPI](https://img.shields.io/pypi/v/paperdl)](https://pypi.org/project/paperdl)
 [![license](https://img.shields.io/github/license/CharlesPikachu/paperdl.svg)](https://github.com/CharlesPikachu/paperdl/blob/master/LICENSE)
 [![PyPI - Downloads](https://pepy.tech/badge/paperdl)](https://pypi.org/project/paperdl/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/paperdl?style=flat-square)](https://pypi.org/project/paperdl/)
 [![issue resolution](https://isitmaintained.com/badge/resolution/CharlesPikachu/paperdl.svg)](https://github.com/CharlesPikachu/paperdl/issues)
 [![open issues](https://isitmaintained.com/badge/open/CharlesPikachu/paperdl.svg)](https://github.com/CharlesPikachu/paperdl/issues)
 
@@ -92,6 +93,7 @@ client.download([paperinfo])
 - [ImageCompressor](https://github.com/CharlesPikachu/imagecompressor): Image compressors written by pure python.
 - [FreeProxy](https://github.com/CharlesPikachu/freeproxy): Collecting free proxies from internet.
 - [Paperdl](https://github.com/CharlesPikachu/paperdl): Search and download paper from specific websites.
+- [Sciogovterminal](https://github.com/CharlesPikachu/sciogovterminal): Browse "The State Council Information Office of the People's Republic of China" in the terminal.
 
 
 # More
