@@ -49,7 +49,7 @@ class Base():
             if task.start():
                 self.logger_handle.info(f"Downloaded {colorize(paperinfo['savename'], 'highlight')} from {colorize(self.source.upper(), 'highlight')} successfully")
             else:
-                self.logger_handle.info(f"Fail to download {colorize(paperinfo['savename'], 'highlight')} from {colorize(self.source.upper(), 'highlight')}")
+                self.logger_handle.warning(f"Fail to download {colorize(paperinfo['savename'], 'highlight')} from {colorize(self.source.upper(), 'highlight')}")
     '''repr'''
     def __repr__(self):
         return 'Paper Source: %s' % self.source

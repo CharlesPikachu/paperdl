@@ -16,6 +16,9 @@ class GoogleScholar(SciHub):
     def __init__(self, config=None, logger_handle=None, **kwargs):
         super(GoogleScholar, self).__init__(config, logger_handle, **kwargs)
         self.source = 'googlescholar'
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+        }
     '''search paper'''
     def search(self, keyword):
         # search
@@ -38,10 +41,7 @@ class GoogleScholar(SciHub):
                 'q': keyword,
                 'btnG': ''
             }
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
-        }
-        response = self.session.get(search_url, params=params, headers=headers)
+        response = self.session.get(search_url, params=params, headers=self.headers)
         # parse
         soup = BeautifulSoup(response.text, features='lxml')
         papers = soup.find_all('div', class_='gs_r')

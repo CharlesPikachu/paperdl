@@ -18,6 +18,9 @@ class SciHub(Base):
     def __init__(self, config=None, logger_handle=None, **kwargs):
         super(SciHub, self).__init__(config, logger_handle, **kwargs)
         self.source = 'scihub'
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+        }
     '''parse paper infos before dowload paper'''
     def parseinfosbeforedownload(self, paperinfos):
         sci_sources = [
@@ -35,7 +38,7 @@ class SciHub(Base):
                 data = {'request': input_content}
                 for sci_source in sci_sources:
                     try:
-                        response = self.session.post(sci_source, data=data, verify=False)
+                        response = self.session.post(sci_source, data=data, verify=False, headers=self.headers)
                         html = etree.HTML(response.content)
                         article = html.xpath('//div[@id="article"]/embed[1]') or html.xpath('//div[@id="article"]/iframe[1]') if html is not None else None
                         pdf_url = urlparse(article[0].attrib['src'], scheme='http').geturl()

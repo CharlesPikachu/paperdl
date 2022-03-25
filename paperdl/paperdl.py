@@ -86,12 +86,13 @@ class Paperdl():
             self.download(paperinfos)
     '''search paper'''
     def search(self, keyword, target_srcs):
+        self.logger_handle.info(f'Searching {colorize(keyword, "highlight")} From {colorize("|".join([c.upper() for c in target_srcs]), "highlight")}')
         def threadSearch(search_api, keyword, target_src, search_results):
             try:
                 search_results.update({target_src: search_api(keyword)})
             except Exception as err:
                 self.logger_handle.error(str(err), True)
-                self.logger_handle.warning(f'Fail to search {keyword} from {target_src}')
+                self.logger_handle.warning(f'Fail to search {colorize(keyword, "highlight")} from {colorize(target_src, "highlight")}')
         task_pool, search_results = [], {}
         for target_src in target_srcs:
             task = threading.Thread(
@@ -166,8 +167,7 @@ def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area):
         client.run(target_srcs=target_srcs)
     else:
         print(client)
-        if source is None: 
-            source = 'scihub' if 'pdf' in inp else 'base'
+        if source is None: source = 'scihub'
         paperinfo = {
             'savename': inp.strip('/').split('/')[-1],
             'ext': 'pdf',
