@@ -12,4 +12,5 @@ Paperdl documentation
 	Install.md
 	Quickstart.md
 	Changelog.md
+	Recommend.md
 	Aboutme.md

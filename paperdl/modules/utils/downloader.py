@@ -7,11 +7,9 @@ WeChat public account:
     Charles_pikachu
 '''
 import os
-import click
-import warnings
 import requests
 from .misc import touchdir
-warnings.filterwarnings('ignore')
+from alive_progress import alive_bar
 
 
 '''Downloader'''
@@ -25,28 +23,24 @@ class Downloader():
         paperinfo, session, headers = self.paperinfo, self.session, self.headers
         if not paperinfo['download_url']: return False
         touchdir(paperinfo['savedir'])
-        try:
-            is_success = False
-            with session.get(paperinfo['download_url'], headers=headers, stream=True, verify=False) as response:
-                if response.status_code == 200:
-                    total_size, chunk_size = int(response.headers['content-length']), 1024
-                    label = '[FileSize]: %0.2fMB' % (total_size / 1024 / 1024)
-                    with click.progressbar(length=total_size, label=label) as progressbar:
-                        with open(os.path.join(paperinfo['savedir'], paperinfo['savename']+'.'+paperinfo['ext']), 'wb') as fp:
-                            for chunk in response.iter_content(chunk_size=chunk_size):
-                                if chunk:
-                                    fp.write(chunk)
-                                    progressbar.update(len(chunk))
-                    is_success = True
-        except:
-            is_success = False
-        return is_success
+        with session.get(paperinfo['download_url'], headers=headers, stream=True) as response:
+            if response.status_code not in [200]: return False
+            total_size, chunk_size, downloaded_size = int(response.headers['content-length']), paperinfo.get('chunk_size', 1024), 0
+            savepath = os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}")
+            text, fp = '[FileSize]: %0.2fMB/%0.2fMB', open(savepath, 'wb')
+            with alive_bar(manual=True) as bar:
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    if not chunk: continue
+                    fp.write(chunk)
+                    downloaded_size += chunk_size
+                    bar.text(text % (downloaded_size / 1024 / 1024, total_size / 1024 / 1024))
+                    bar(min(downloaded_size / total_size, 1))
+        return True
     '''set request headers'''
     def __setheaders(self, source):
-        self.default_headers = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
-        }
-        try:
+        if hasattr(self, f'{source}_headers'):
             self.headers = getattr(self, f'{source}_headers')
-        except:
-            self.headers = self.default_headers
+        else:
+            self.headers = {
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+            }

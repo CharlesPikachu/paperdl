@@ -16,6 +16,7 @@ Documents: https://paperdl.readthedocs.io/
 
 
 # Paperdl
+
 ```
 Search and download paper from specific websites.
 You can star this repository to keep track of the project if it's helpful for you, thank you for your support.
@@ -23,6 +24,7 @@ You can star this repository to keep track of the project if it's helpful for yo
 
 
 # Support List
+
 |  Source                                          |   Support Search?  |  Support Download?   |
 |  :----:                                          |   :----:           |  :----:              |
 |  [scihub](https://sci-hub.st/)                   |   ✗                |  ✓                   |
@@ -31,11 +33,15 @@ You can star this repository to keep track of the project if it's helpful for yo
 
 
 # Install
+
 #### Pip install
+
 ```
 run "pip install paperdl"
 ```
+
 #### Source code install
+
 ```sh
 (1) Offline
 Step1: git clone https://github.com/CharlesPikachu/paperdl.git
@@ -47,7 +53,10 @@ run "pip install git+https://github.com/CharlesPikachu/paperdl.git@master"
 
 # Quick Start
 
+#### Calling API
+
 If you want to search and download papers from arxiv and google scholar, you can write codes as follow:
+
 ```python
 from paperdl import paperdl
 
@@ -56,11 +65,15 @@ target_srcs = ['arxiv', 'googlescholar']
 client = paperdl.Paperdl(config=config)
 client.run(target_srcs)
 ```
+
 In addition, if you can not visit google, you can set config as follow:
+
 ```python
 config = {'logfilepath': 'paperdl.log', 'savedir': 'papers', 'search_size_per_source': 5, 'proxies': {}, 'area': 'CN'}
 ```
+
 You can also only download papers by using sci-hub as follow:
+
 ```python
 
 from paperdl import paperdl
@@ -77,12 +90,19 @@ paperinfo = {
 client.download([paperinfo])
 ```
 
+#### Calling EXE
+
+```sh
+
+```
 
 # Screenshot
+
 ![img](./docs/screenshot.gif)
 
 
 # Projects in Charles_pikachu
+
 - [Games](https://github.com/CharlesPikachu/Games): Create interesting games by pure python.
 - [DecryptLogin](https://github.com/CharlesPikachu/DecryptLogin): APIs for loginning some websites by using requests.
 - [Musicdl](https://github.com/CharlesPikachu/musicdl): A lightweight music downloader written by pure python.
@@ -97,9 +117,12 @@ client.download([paperinfo])
 - [CodeFree](https://github.com/CharlesPikachu/codefree): Make no code a reality.
 - [DeepLearningToys](https://github.com/CharlesPikachu/deeplearningtoys): Some deep learning toys implemented in pytorch.
 - [DataAnalysis](https://github.com/CharlesPikachu/dataanalysis): Some data analysis projects in charles_pikachu.
+- [Imagedl](https://github.com/CharlesPikachu/imagedl): Search and download images from specific websites.
 
 
 # More
+
 #### WeChat Official Accounts
+
 *Charles_pikachu*  
 ![img](./docs/pikachu.jpg)

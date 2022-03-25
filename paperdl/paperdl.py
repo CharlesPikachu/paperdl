@@ -8,6 +8,8 @@ WeChat public account:
 '''
 import sys
 import copy
+import json
+import click
 import warnings
 import threading
 if __name__ == '__main__':
@@ -16,6 +18,7 @@ if __name__ == '__main__':
 else:
     from .modules import *
     from .__init__ import __version__
+warnings.filterwarnings('ignore')
 
 
 '''basic info'''
@@ -35,7 +38,7 @@ Savedir:
 '''Paperdl'''
 class Paperdl():
     def __init__(self, configpath=None, config=None, **kwargs):
-        assert configpath or config, 'configpath or config should be given...'
+        assert configpath or config, 'configpath or config should be given'
         self.config = loadConfig(configpath) if config is None else config
         default_config = {
             'logfilepath': 'paperdl.log',
@@ -61,7 +64,7 @@ class Paperdl():
             items, records, idx = [], {}, 0
             for key, values in search_results.items():
                 for value in values:
-                    items.append([str(idx), value['title'], value['authors'].split(',')[0], value['source']])
+                    items.append([str(idx), value['title'] if len(value['title']) < 50 else value['title'][:50] + '...', value['authors'].split(',')[0], value['source']])
                     records.update({str(idx): value})
                     idx += 1
             if len(items) < 1: 
@@ -120,9 +123,58 @@ class Paperdl():
             self.run()
         else:
             return user_input
+    '''str'''
+    def __str__(self):
+        return 'Welcome to use paperdl!\nYou can visit https://github.com/CharlesPikachu/paperdl for more details.'
+
+
+'''cmd直接运行'''
+@click.command()
+@click.version_option()
+@click.option('-mode', '--mode', default='download', help='the used mode, support "search" and "download"')
+@click.option('-i', '--inp', default=None, help='the paper to download, the supported format is the same as sci-hub')
+@click.option('-s', '--source', default=None, help='the used source, support "arxiv", "scihub" and "googlescholar", you can use "," to split multi sources')
+@click.option('-d', '--savedir', default='papers', help='the directory for saving papers')
+@click.option('-l', '--logfilepath', default='paperdl.log', help='the logging filepath')
+@click.option('-z', '--size', default=5, help='search size per source')
+@click.option('-p', '--proxies', default='{}', help='the proxies to be adopted')
+@click.option('-a', '--area', default='CN', help='your area, support "CN" and "EN"')
+def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area):
+    # prepare
+    assert mode in ['search', 'download']
+    area = area.upper()
+    if mode == 'download': assert inp is not None, 'input url should be specified in download mode'
+    config = {
+        'logfilepath': logfilepath,
+        'savedir': savedir,
+        'search_size_per_source': size,
+        'proxies': json.loads(proxies),
+        'area': area,
+    }
+    if source is None: 
+        target_srcs = ['arxiv', 'googlescholar']
+    else:
+        target_srcs = [s.strip() for s in source.split(',')]
+    client = Paperdl(config=config)
+    # if you select the search mode
+    if mode == 'search':
+        client.run(target_srcs=target_srcs)
+    else:
+        print(client)
+        if source is None: source = 'scihub'
+        paperinfo = {
+            'savename': inp.strip('/').split('/')[-1],
+            'ext': 'pdf',
+            'savedir': savedir,
+            'input': inp,
+            'source': source,
+        }
+        client.download([paperinfo])
 
 
 '''run'''
 if __name__ == '__main__':
-    client = Paperdl('config.json')
+    import os
+    rootdir = os.path.split(os.path.abspath(__file__))[0]
+    client = Paperdl(os.path.join(rootdir, 'config.json'))
     client.run()

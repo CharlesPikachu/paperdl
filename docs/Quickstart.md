@@ -1,5 +1,7 @@
 # Quick Start
 
+#### Calling API
+
 If you want to search and download papers from arxiv and google scholar, you can write codes as follow:
 
 ```python
@@ -40,3 +42,15 @@ Here is a screenshot:
   <img src="https://raw.githubusercontent.com/CharlesPikachu/paperdl/main/docs/screenshot.gif" width="600"/>
 </div>
 <br />
+
+#### Calling EXE
+
+You can directly leverage paperdl in the terminal, and the usage is as follow:
+
+```sh
+```
+
+Here is an example:
+
+```sh
+```
