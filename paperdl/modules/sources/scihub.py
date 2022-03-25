@@ -23,10 +23,9 @@ class SciHub(Base):
         }
     '''parse paper infos before dowload paper'''
     def parseinfosbeforedownload(self, paperinfos):
-        sci_sources = [
-            'https://sci-hub.st/', 
-            'https://sci-hub.ru/',
-            'https://sci-hub.se/',
+        scihub_sites = [
+            'https://sci-hub.st/', 'https://sci-hub.ru/', 'https://sci-hub.se/', 
+            'https://sci-hub.shop/', 'http://sci-hub.ren/', 
         ]
         # fetch pdf url
         for paperinfo in paperinfos:
@@ -34,18 +33,19 @@ class SciHub(Base):
             input_type = self.guessinputtype(input_content)
             if input_type == 'pdf': 
                 paperinfo['download_url'] = input_content
+            elif input_type == 'arxiv':
+                paperinfo['download_url'] = input_content.replace('abs', 'pdf') + '.pdf'
             else:
-                data = {'request': input_content}
-                for sci_source in sci_sources:
-                    try:
-                        response = self.session.post(sci_source, data=data, verify=False, headers=self.headers)
-                        html = etree.HTML(response.content)
-                        article = html.xpath('//div[@id="article"]/embed[1]') or html.xpath('//div[@id="article"]/iframe[1]') if html is not None else None
-                        pdf_url = urlparse(article[0].attrib['src'], scheme='http').geturl()
-                        paperinfo['download_url'] = pdf_url
-                        break
-                    except:
-                        continue
+                for scihub_site in scihub_sites:
+                    self.headers.update({'Referer': scihub_site})
+                    response = self.session.get(scihub_site + input_content, headers=self.headers, verify=False)
+                    if response.status_code not in [200]: continue
+                    html = etree.HTML(response.content)
+                    article = html.xpath('//div[@id="article"]/embed[1]') or html.xpath('//div[@id="article"]/iframe[1]') if html is not None else None
+                    if not article: continue
+                    pdf_url = urlparse(article[0].attrib['src'], scheme='http').geturl()
+                    paperinfo['download_url'] = pdf_url
+                    break
             if 'download_url' not in paperinfo: paperinfo['download_url'] = None
             paperinfo['source'] = self.source
         # return
@@ -55,6 +55,7 @@ class SciHub(Base):
         input_type, doi_pattern = None, re.compile(r'\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'])\S)+)\b')
         if input_content.startswith('http') or input_content.startswith('https'):
             if '.pdf' in input_content: input_type = 'pdf'
+            elif 'arxiv' in input_content: input_type = 'arxiv'
             else: input_type = 'url'
         elif input_content.isdigit(): input_type = 'pmid'
         elif input_content.startswith('doi:') or doi_pattern.match(input_content): input_type = 'doi'

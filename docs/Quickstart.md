@@ -48,9 +48,26 @@ Here is a screenshot:
 You can directly leverage paperdl in the terminal, and the usage is as follow:
 
 ```sh
+Usage: paperdl [OPTIONS]
+
+Options:
+  --version               Show the version and exit.
+  -m, --mode TEXT         the used mode, support "search" and "download"
+  -i, --inp TEXT          the paper to download, the supported format is the
+                          same as sci-hub
+  -s, --source TEXT       the used source, support "arxiv", "scihub" and
+                          "googlescholar", you can use "," to split multi
+                          sources
+  -d, --savedir TEXT      the directory for saving papers
+  -l, --logfilepath TEXT  the logging filepath
+  -z, --size INTEGER      search size per source
+  -p, --proxies TEXT      the proxies to be adopted
+  -a, --area TEXT         your area, support "CN" and "EN"
+  --help                  Show this message and exit.
 ```
 
 Here is an example:
 
 ```sh
+paperdl -i https://ieeexplore.ieee.org/document/7485869/ -m download
 ```

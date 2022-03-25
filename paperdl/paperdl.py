@@ -137,7 +137,7 @@ class Paperdl():
 '''cmd直接运行'''
 @click.command()
 @click.version_option()
-@click.option('-mode', '--mode', default='download', help='the used mode, support "search" and "download"')
+@click.option('-m', '--mode', default='download', help='the used mode, support "search" and "download"')
 @click.option('-i', '--inp', default=None, help='the paper to download, the supported format is the same as sci-hub')
 @click.option('-s', '--source', default=None, help='the used source, support "arxiv", "scihub" and "googlescholar", you can use "," to split multi sources')
 @click.option('-d', '--savedir', default='papers', help='the directory for saving papers')

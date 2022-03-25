@@ -26,9 +26,7 @@ class Base():
         self.session.proxies.update(config['proxies'])
         self.config = config
         self.logger_handle = logger_handle
-        if self.logger_handle is None:
-            from ..utils import Logger
-            self.logger_handle = Logger(config['logfilepath'])
+        if self.logger_handle is None: self.logger_handle = Logger(config['logfilepath'])
     '''search paper'''
     def search(self, keyword):
         raise NotImplementedError('not to be implemented')

@@ -6,7 +6,6 @@ Author:
 WeChat public account:
     Charles_pikachu
 '''
-import random
 from .scihub import SciHub
 from bs4 import BeautifulSoup
 
@@ -23,16 +22,21 @@ class GoogleScholar(SciHub):
     def search(self, keyword):
         # search
         if self.config.get('area') == 'CN':
-            search_url = random.choice([
+            search_urls = [
+                'https://xs.dailyheadlines.cc/scholar',
                 'https://xs2.dailyheadlines.cc/scholar',
                 'https://scholar.lanfanshu.cn/scholar',
-            ])
+            ]
             params = {
                 'hl': 'zh-CN',
                 'as_sdt': '0,33',
                 'q': keyword,
                 'btnG': ''
             }
+            for search_url in search_urls:
+                self.headers.update({'Referer': f'{search_url}?q={keyword}'})
+                response = self.session.get(search_url, params=params, headers=self.headers)
+                if response.status_code == 200: break
         else:
             search_url = 'https://scholar.google.com/scholar'
             params = {
@@ -41,7 +45,7 @@ class GoogleScholar(SciHub):
                 'q': keyword,
                 'btnG': ''
             }
-        response = self.session.get(search_url, params=params, headers=self.headers)
+            response = self.session.get(search_url, params=params, headers=self.headers)
         # parse
         soup = BeautifulSoup(response.text, features='lxml')
         papers = soup.find_all('div', class_='gs_r')
