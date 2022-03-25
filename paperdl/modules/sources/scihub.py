@@ -38,7 +38,8 @@ class SciHub(Base):
             else:
                 for scihub_site in scihub_sites:
                     self.headers.update({'Referer': scihub_site})
-                    response = self.session.get(scihub_site + input_content, headers=self.headers, verify=False)
+                    try: response = self.session.get(scihub_site + input_content, headers=self.headers, verify=False)
+                    except: continue
                     if response.status_code not in [200]: continue
                     html = etree.HTML(response.content)
                     article = html.xpath('//div[@id="article"]/embed[1]') or html.xpath('//div[@id="article"]/iframe[1]') if html is not None else None
