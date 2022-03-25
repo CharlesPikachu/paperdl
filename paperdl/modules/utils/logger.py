@@ -10,6 +10,20 @@ import logging
 from prettytable import PrettyTable
 
 
+'''define the colors'''
+COLORS = {
+    'red': '\033[31m',
+    'green': '\033[32m',
+    'yellow': '\033[33m',
+    'blue': '\033[34m',
+    'pink': '\033[35m',
+    'cyan': '\033[36m',
+    'highlight': '\033[93m',
+    'number': '\033[96m',
+    'title': '\033[93m',
+}
+
+
 '''Logger'''
 class Logger():
     def __init__(self, logfilepath, **kwargs):
@@ -56,3 +70,10 @@ def printTable(title, items):
     for item in items: table.add_row(item)
     print(table)
     return table
+
+
+'''colorize words in terminal'''
+def colorize(string, color):
+    string = str(string)
+    if color not in COLORS: return string
+    return COLORS[color] + string + '\033[0m'

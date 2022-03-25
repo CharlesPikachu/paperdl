@@ -8,7 +8,7 @@ WeChat public account:
 '''
 import time
 import requests
-from ..utils.downloader import Downloader
+from ..utils import Downloader, colorize, Logger
 
 
 '''Base class for the paper sources'''
@@ -31,7 +31,7 @@ class Base():
             self.logger_handle = Logger(config['logfilepath'])
     '''search paper'''
     def search(self, keyword):
-        raise NotImplementedError('not to be implemented...')
+        raise NotImplementedError('not to be implemented')
     '''download paper'''
     def download(self, paperinfos):
         if hasattr(self, 'parseinfosbeforedownload'): paperinfos = self.parseinfosbeforedownload(paperinfos)
@@ -44,12 +44,12 @@ class Base():
         for paperinfo in paperinfos:
             for key, value in default_config.items():
                 if key not in paperinfo: paperinfo[key] = value
-            self.logger_handle.info(f"Downloading {paperinfo['savename']} from {self.source}")
+            self.logger_handle.info(f"Downloading {colorize(paperinfo['savename'], 'highlight')} from {colorize(self.source.upper(), 'highlight')}")
             task = Downloader(paperinfo, self.session)
             if task.start():
-                self.logger_handle.info(f"Downloaded {paperinfo['savename']} from {self.source} successfully")
+                self.logger_handle.info(f"Downloaded {colorize(paperinfo['savename'], 'highlight')} from {colorize(self.source.upper(), 'highlight')} successfully")
             else:
-                self.logger_handle.info(f"Fail to download {paperinfo['savename']} from {self.source}")
+                self.logger_handle.info(f"Fail to download {colorize(paperinfo['savename'], 'highlight')} from {colorize(self.source.upper(), 'highlight')}")
     '''repr'''
     def __repr__(self):
         return 'Paper Source: %s' % self.source

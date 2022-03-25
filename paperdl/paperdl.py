@@ -64,11 +64,16 @@ class Paperdl():
             items, records, idx = [], {}, 0
             for key, values in search_results.items():
                 for value in values:
-                    items.append([str(idx), value['title'] if len(value['title']) < 50 else value['title'][:50] + '...', value['authors'].split(',')[0], value['source']])
+                    items.append([
+                        colorize(str(idx), 'number'), 
+                        colorize(value['title'] if len(value['title']) < 50 else value['title'][:50] + '...', 'title'), 
+                        value['authors'].split(',')[0], 
+                        value['source'].upper()
+                    ])
                     records.update({str(idx): value})
                     idx += 1
             if len(items) < 1: 
-                self.logger_handle.info('No related papers were found')
+                self.logger_handle.error(colorize('No related papers were found', 'red'))
                 continue
             printTable(title, items)
             # download papers
@@ -161,7 +166,8 @@ def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area):
         client.run(target_srcs=target_srcs)
     else:
         print(client)
-        if source is None: source = 'scihub'
+        if source is None: 
+            source = 'scihub' if 'pdf' in inp else 'base'
         paperinfo = {
             'savename': inp.strip('/').split('/')[-1],
             'ext': 'pdf',

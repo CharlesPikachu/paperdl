@@ -3,3 +3,4 @@ beautifulsoup4
 lxml
 click
 prettytable
+alive-progress

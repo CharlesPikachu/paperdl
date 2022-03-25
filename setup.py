@@ -6,7 +6,7 @@ Author:
 微信公众号:
     Charles的皮卡丘
 GitHub:
-    https://github.com/CharlesPikachu
+    https://github.com/CharlesPikachu/paperdl
 '''
 import paperdl
 from setuptools import setup, find_packages
@@ -35,6 +35,7 @@ setup(
     author_email=paperdl.__email__,
     license=paperdl.__license__,
     include_package_data=True,
+    entry_points={'console_scripts': ['paperdl = paperdl.paperdl:paperdlcmd']},
     install_requires=list(open('requirements.txt', 'r').readlines()),
     zip_safe=True,
     packages=find_packages()
