@@ -59,12 +59,7 @@ class Downloader():
             import img2pdf
             with open(os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}"), 'wb') as fp:
                 fp.write(img2pdf.convert(imagepaths))
-            while True:
-                try:
-                    shutil.rmtree(paperinfo['docid'])
-                    break
-                except:
-                    continue
+            shutil.rmtree(paperinfo['docid'])
             return True
         elif paperinfo['filetype'] in ['word', 'pdf', 'excel']:
             text = '[PageSize-Fonts]: %d/%d'
@@ -79,47 +74,44 @@ class Downloader():
                         fp.close()
                     bar.text(text % (idx+1, len(paperinfo['download_url']['fonts_csss'])))
                     bar(min((idx + 1) / len(paperinfo['download_url']['fonts_csss']), 1))
-            text = '[PageSize-Jsons]: %d/%d'
+            text, jsons = '[PageSize-Jsons]: %d/%d', []
             with alive_bar(manual=True) as bar:
                 for idx, _ in enumerate(range(len(paperinfo['download_url']['jsons']))):
                     download_url = paperinfo['download_url']['jsons'][idx+1]
                     response = session.get(download_url)
-                    fp = open(os.path.join(paperinfo['docid'], f'{idx+1}.json'), 'w')
-                    json.dump(json.loads(re.search(r'wenku_[0-9]+\((.*)\)', response.text).group(1)), fp)
+                    jsons.append(json.loads(re.search(r'wenku_[0-9]+\((.*)\)', response.text).group(1)))
                     bar.text(text % (idx+1, len(paperinfo['download_url']['jsons'])))
                     bar(min((idx + 1) / len(paperinfo['download_url']['jsons']), 1))
             text = '[PageSize-Pngs]: %d/%d'
             with alive_bar(manual=True) as bar:
-                for idx, _ in enumerate(range(len(paperinfo['download_url']['pngs']))):
-                    download_url = paperinfo['download_url']['pngs'][idx+1]
-                    response = session.get(download_url)
-                    fp = open(os.path.join(paperinfo['docid'], f'{idx+1}.png'), 'wb')
-                    fp.write(response.content)
-                    bar.text(text % (idx+1, len(paperinfo['download_url']['pngs'])))
-                    bar(min((idx + 1) / len(paperinfo['download_url']['pngs']), 1))
+                for idx, _ in enumerate(range(len(paperinfo['download_url']['jsons']))):
+                    try:
+                        download_url = paperinfo['download_url']['pngs'][idx+1]
+                        response = session.get(download_url)
+                        fp = open(os.path.join(paperinfo['docid'], f'{idx+1}.png'), 'wb')
+                        fp.write(response.content)
+                    except:
+                        pass
+                    bar.text(text % (idx+1, len(paperinfo['download_url']['jsons'])))
+                    bar(min((idx + 1) / len(paperinfo['download_url']['jsons']), 1))
             text = '[PageSize-Generate]: %d/%d'
             with alive_bar(manual=True) as bar:
-                for idx, _ in enumerate(range(len(paperinfo['download_url']['pngs']))):
-                    self.savepdfforbaiduwenku(paperinfo['docid'], idx+1)
-                    bar.text(text % (idx+1, len(paperinfo['download_url']['pngs'])))
-                    bar(min((idx + 1) / len(paperinfo['download_url']['pngs']), 1))
+                for idx, _ in enumerate(range(len(paperinfo['download_url']['jsons']))):
+                    self.savepdfforbaiduwenku(paperinfo['docid'], idx+1, jsons[idx])
+                    bar.text(text % (idx+1, len(paperinfo['download_url']['jsons'])))
+                    bar(min((idx + 1) / len(paperinfo['download_url']['jsons']), 1))
             text = '[PageSize-Merge]: %d/%d'
             pdfs = {x[:-4]: os.path.join(paperinfo['docid'], x) for x in os.listdir(paperinfo['docid']) if x[-4:] == '.pdf'}
             from PyPDF2 import PdfFileMerger, PdfFileReader
             file_merger = PdfFileMerger()
             with alive_bar(manual=True) as bar:
-                for idx, _ in enumerate(range(len(paperinfo['download_url']['pngs']))):
+                for idx, _ in enumerate(range(len(paperinfo['download_url']['jsons']))):
                     with open(pdfs[str(idx + 1)], 'rb') as fp:
                         file_merger.append(PdfFileReader(fp))
-                    bar.text(text % (idx+1, len(paperinfo['download_url']['pngs'])))
-                    bar(min((idx + 1) / len(paperinfo['download_url']['pngs']), 1))
+                    bar.text(text % (idx+1, len(paperinfo['download_url']['jsons'])))
+                    bar(min((idx + 1) / len(paperinfo['download_url']['jsons']), 1))
             file_merger.write(os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}"))
-            while True:
-                try:
-                    shutil.rmtree(paperinfo['docid'])
-                    break
-                except:
-                    continue
+            shutil.rmtree(paperinfo['docid'])
             return True
         elif paperinfo['filetype'] in ['txt']:
             text, fp = '[PageSize]: %d/%d', open(os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}"), 'w')
@@ -132,13 +124,12 @@ class Downloader():
         else:
             return False
     '''save pdf for baiduwenku'''
-    def savepdfforbaiduwenku(self, docid, pagenum):
+    def savepdfforbaiduwenku(self, docid, pagenum, data):
         from PIL import Image
         from imp import reload
         from reportlab.pdfgen import canvas
         from reportlab.pdfbase import pdfmetrics
         from reportlab.pdfbase.ttfonts import TTFont
-        data = json.load(open(os.path.join(docid, f'{pagenum}.json')))
         canvas_pdf = canvas.Canvas(
             os.path.join(docid, f'{pagenum}.pdf'),
             pagesize=(data['page']['pw'], data['page']['ph']),
