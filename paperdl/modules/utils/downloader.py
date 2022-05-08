@@ -12,8 +12,8 @@ import json
 import shutil
 import base64
 import requests
-from .misc import touchdir
 from alive_progress import alive_bar
+from .misc import touchdir, filterBadCharacter
 
 
 '''Downloader'''
@@ -26,6 +26,7 @@ class Downloader():
     def start(self):
         paperinfo, session, headers = self.paperinfo, self.session, self.headers
         if not paperinfo['download_url']: return False
+        paperinfo['savename'] = filterBadCharacter(paperinfo['savename'])
         touchdir(paperinfo['savedir'])
         if paperinfo['source'] in ['baiduwenku']: return self.downloadfrombaiduwenku()
         with session.get(paperinfo['download_url'], headers=headers, stream=True) as response:
@@ -58,7 +59,12 @@ class Downloader():
             import img2pdf
             with open(os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}"), 'wb') as fp:
                 fp.write(img2pdf.convert(imagepaths))
-            shutil.rmtree(paperinfo['docid'])
+            while True:
+                try:
+                    shutil.rmtree(paperinfo['docid'])
+                    break
+                except:
+                    continue
             return True
         elif paperinfo['filetype'] in ['word', 'pdf', 'excel']:
             text = '[PageSize-Fonts]: %d/%d'
@@ -108,7 +114,12 @@ class Downloader():
                     bar.text(text % (idx+1, len(paperinfo['download_url']['pngs'])))
                     bar(min((idx + 1) / len(paperinfo['download_url']['pngs']), 1))
             file_merger.write(os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}"))
-            shutil.rmtree(paperinfo['docid'])
+            while True:
+                try:
+                    shutil.rmtree(paperinfo['docid'])
+                    break
+                except:
+                    continue
             return True
         elif paperinfo['filetype'] in ['txt']:
             text, fp = '[PageSize]: %d/%d', open(os.path.join(paperinfo['savedir'], f"{paperinfo['savename']}.{paperinfo['ext']}"), 'w')

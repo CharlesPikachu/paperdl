@@ -109,6 +109,8 @@ Options:
   -z, --size INTEGER      search size per source
   -p, --proxies TEXT      the proxies to be adopted
   -a, --area TEXT         your area, support "CN" and "EN"
+  -c, --cookie TEXT       the cookie copied from the target website, only used
+                          in "baiduwenku"
   --help                  Show this message and exit.
 ```
 
