@@ -9,7 +9,6 @@ WeChat public account:
 import re
 from .base import Base
 from lxml import etree
-from ..utils import Downloader
 from urllib.parse import urlparse
 
 

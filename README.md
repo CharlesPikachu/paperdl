@@ -28,6 +28,7 @@ You can star this repository to keep track of the project if it's helpful for yo
 |  Source                                          |   Support Search?  |  Support Download?   |
 |  :----:                                          |   :----:           |  :----:              |
 |  [scihub](https://sci-hub.st/)                   |   ✗                |  ✓                   |
+|  [baiduwenku](https://wenku.baidu.com/)          |   ✗                |  ✓                   |
 |  [arxiv](https://arxiv.org/)                     |   ✓                |  ✓                   |
 |  [googlescholar](https://scholar.google.com/)    |   ✓                |  ✓                   |
 

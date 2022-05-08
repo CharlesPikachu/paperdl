@@ -113,6 +113,7 @@ class Paperdl():
         supported_sources = {
             'arxiv': Arxiv,
             'scihub': SciHub,
+            'baiduwenku': Baiduwenku,
             'googlescholar': GoogleScholar,
         }
         for key, value in supported_sources.items():
@@ -145,7 +146,8 @@ class Paperdl():
 @click.option('-z', '--size', default=5, help='search size per source')
 @click.option('-p', '--proxies', default='{}', help='the proxies to be adopted')
 @click.option('-a', '--area', default='CN', help='your area, support "CN" and "EN"')
-def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area):
+@click.option('-c', '--cookie', default=None, help='the cookie copied from the target website, only used in "baiduwenku"')
+def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area, cookie):
     # prepare
     assert mode in ['search', 'download']
     area = area.upper()
@@ -167,7 +169,11 @@ def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area):
         client.run(target_srcs=target_srcs)
     else:
         print(client)
-        if source is None: source = 'scihub'
+        if source is None: 
+            if 'wenku.baidu.com' in inp:
+                source = 'baiduwenku'
+            else:
+                source = 'scihub'
         paperinfo = {
             'savename': inp.strip('/').split('/')[-1],
             'ext': 'pdf',
@@ -175,6 +181,7 @@ def paperdlcmd(mode, inp, source, savedir, logfilepath, size, proxies, area):
             'input': inp,
             'source': source,
         }
+        if source in ['baiduwenku']: paperinfo['cookie'] = cookie
         client.download([paperinfo])
 
 
