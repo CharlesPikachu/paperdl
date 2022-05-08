@@ -8,7 +8,8 @@ Paperdl documentation
 
 .. toctree::
 	:maxdepth: 2
-
+	
+	State.md
 	Install.md
 	Quickstart.md
 	Changelog.md
