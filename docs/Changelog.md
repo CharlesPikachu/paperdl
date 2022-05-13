@@ -14,3 +14,8 @@
 
 - Version: v0.1.5,
 - Update: support baiduwenku.
+
+**2022-05-13**
+
+- Version: v0.1.6,
+- Update: fix the bugs in downloader.

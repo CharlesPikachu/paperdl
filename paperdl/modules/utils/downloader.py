@@ -146,7 +146,7 @@ class Downloader():
         for ttf in ttfs:
             pdfmetrics.registerFont(TTFont(ttf[:-4], os.path.join(docid, ttf)))
         try: image = Image.open(os.path.join(docid, f'{pagenum}.png'))
-        except: pass
+        except: image = None
         touchdir(os.path.join(docid, str(pagenum)))
         data_body = sorted(data['body'], key=lambda item: item['p']['z'])
         for item in data_body:
@@ -178,6 +178,8 @@ class Downloader():
                 canvas_pdf.drawText(textobject)
             elif item['t'] == 'pic':
                 if item['ps'] and item['ps'].get('_drop') and item['ps'].get('_drop') == 1:
+                    continue
+                if image is None:
                     continue
                 image_crop = image.crop((
                     int(item['c']['ix']), 
