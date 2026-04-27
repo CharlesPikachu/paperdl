@@ -1,2 +1,2 @@
 '''initialize'''
-from 
+from .base import BasePaperClient
