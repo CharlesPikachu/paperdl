@@ -62,41 +62,24 @@ class PaperInfo:
     }
     '''postinit'''
     def __post_init__(self) -> None:
-        self.source = self.cleantext(self.source)
-        self.title = self.cleantext(self.title)
-
-        self.abstract = self.cleantext(self.abstract)
-        self.authors = self._to_str_list(self.authors)
-
-        self.article_url = self._clean_url(self.article_url)
-        self.download_url = self._clean_url(self.download_url)
-
-        self.doi = self.cleantext(self.doi)
-        self.arxiv_id = self.cleantext(self.arxiv_id)
-
-        self.venue = self.cleantext(self.venue)
-        self.publisher = self.cleantext(self.publisher)
-
-        self.published_at = self._parse_date(self.published_at)
-        self.updated_at = self._parse_date(self.updated_at)
-
-        self.source_id = self.cleantext(self.source_id)
-        self.query = self.cleantext(self.query)
-
-        self.keywords = self._to_str_list(self.keywords)
-        self.categories = self._to_str_list(self.categories)
-        self.tags = self._unique_list(self._to_str_list(self.tags))
-
-        self.language = self.cleantext(self.language)
-        self.license = self.cleantext(self.license)
-
-        self.rank = self._to_int(self.rank)
-        self.citation_count = self._to_int(self.citation_count)
-        self.reference_count = self._to_int(self.reference_count)
-        self.score = self._to_float(self.score)
-
-        if not isinstance(self.extra, dict):
-            self.extra = {"raw_extra": self.extra}
+        # core paper information
+        self.source, self.title, self.abstract, self.authors = self.cleantext(self.source), self.cleantext(self.title), self.cleantext(self.abstract), self.tostrlist(self.authors)
+        self.article_url, self.download_url = self.cleanurl(self.article_url), self.cleanurl(self.download_url)
+        self.doi, self.arxiv_id = self.cleantext(self.doi), self.cleantext(self.arxiv_id)
+        # publication information
+        self.venue, self.publisher = self.cleantext(self.venue), self.cleantext(self.publisher)
+        self.published_at, self.updated_at = self.parsedate(self.published_at), self.parsedate(self.updated_at)
+        # search metadata
+        self.source_id, self.query = self.cleantext(self.source_id), self.cleantext(self.query)
+        self.rank, self.score = self.toint(self.rank), self.tofloat(self.score)
+        # topic, category, and custom tags
+        self.keywords, self.categories, self.tags = self.tostrlist(self.keywords), self.tostrlist(self.categories), self.uniquelist(self.tostrlist(self.tags))
+        # impact and bibliographic metrics
+        self.citation_count, self.reference_count = self.toint(self.citation_count), self.toint(self.reference_count)
+        # availability and license information
+        self.language, self.license = self.cleantext(self.language), self.cleantext(self.license)
+        # system extension information
+        self.extra = {"raw_extra": self.extra} if not isinstance(self.extra, dict) else self.extra
     '''attributedescriptions'''
     @classmethod
     def attributedescriptions(cls) -> dict[str, str]:
@@ -111,334 +94,138 @@ class PaperInfo:
         if value is None: return None
         text = (lambda s: (lambda t: t[:max_len].rstrip() if max_len is not None and len(t) > max_len else t)(re.sub(r"\s+", " ", BeautifulSoup(s, "lxml").get_text(" ") if strip_html else s).strip()))(fix_text(str(value)))
         return text or None
-
-
-
-
+    '''cleanfilename'''
     @classmethod
-    def _clean_filename(
-        cls,
-        value: Any,
-        *,
-        max_len: int = 180,
-        default: str = "untitled",
-    ) -> str:
-        """
-        Generate a safe filename.
-
-        Uses pathvalidate to handle Windows/macOS/Linux invalid filename chars.
-        """
-        text = cls.cleantext(value) or default
-        name = sanitize_filename(text, replacement_text="_")
-        name = re.sub(r"_+", "_", name).strip(" ._-")
-        name = name or default
+    def cleanfilename(cls, value: Any, *, max_len: int = 180, default: str = None) -> str:
+        default = default if default else f"notitle-{cls.identity_key}"
+        name = sanitize_filename(cls.cleantext(value) or default, replacement_text="_")
+        name = re.sub(r"_+", "_", name).strip(" ._-") or default
         return name[:max_len].rstrip(" ._-") or default
-
+    '''tostrlist'''
     @classmethod
-    def _to_str_list(cls, value: Any) -> list[str]:
-        if value is None or value == "":
-            return []
-
-        if isinstance(value, str):
-            items = re.split(r";|,|\|", value)
-            return cls._unique_list(cls.cleantext(x) for x in items)
-
-        if isinstance(value, dict):
-            name = (
-                value.get("name")
-                or value.get("full_name")
-                or value.get("author")
-                or value.get("title")
-            )
-            return cls._unique_list([cls.cleantext(name)])
-
-        if isinstance(value, (list, tuple, set)):
-            results = []
-            for item in value:
-                if isinstance(item, dict):
-                    item = (
-                        item.get("name")
-                        or item.get("full_name")
-                        or item.get("author")
-                        or item.get("title")
-                    )
-                results.append(cls.cleantext(item))
-            return cls._unique_list(results)
-
-        cleaned = cls.cleantext(value)
-        return [cleaned] if cleaned else []
-
+    def tostrlist(cls, value: Any) -> list[str]:
+        if value is None or value == "": return []
+        if isinstance(value, str): return cls.uniquelist(cls.cleantext(x) for x in re.split(r";|,|\|", value))
+        if isinstance(value, dict): return cls.uniquelist([cls.cleantext((value.get("name") or value.get("full_name") or value.get("author") or value.get("title")))])
+        if isinstance(value, (list, tuple, set)): return cls.uniquelist([cls.cleantext((item.get("name") or item.get("full_name") or item.get("author") or item.get("title")) if isinstance(item, dict) else item) for item in value])
+        return [cleaned] if (cleaned := cls.cleantext(value)) else []
+    '''uniquelist'''
     @staticmethod
-    def _unique_list(values: Any) -> list[str]:
-        seen = set()
-        results = []
-
+    def uniquelist(values: Any) -> list[str]:
+        seen, results = set(), []
         for value in values or []:
-            if not value:
-                continue
-
-            value = str(value).strip()
-            key = value.lower()
-
-            if key not in seen:
-                seen.add(key)
-                results.append(value)
-
+            if not value: continue
+            if (key := (value := str(value).strip()).lower()) not in seen: seen.add(key); results.append(value)
         return results
-
+    '''cleanurl'''
     @classmethod
-    def _clean_url(cls, value: Any) -> Optional[str]:
-        url = cls.cleantext(value, strip_html=False)
-
-        if not url:
-            return None
-
-        parsed = urlparse(url)
-
-        if parsed.scheme not in {"http", "https"}:
-            return None
-
-        if not parsed.netloc:
-            return None
-
+    def cleanurl(cls, value: Any) -> Optional[str]:
+        if (not (url := cls.cleantext(value, strip_html=False))) or ((parsed := urlparse(url)).scheme not in {"http", "https"}) or (not parsed.netloc): return None
         return url
-
+    '''parsedate'''
     @staticmethod
-    def _parse_date(value: Any) -> Optional[str]:
-        if value is None or value == "":
-            return None
-
-        if isinstance(value, datetime):
-            return value.isoformat()
-
-        if isinstance(value, date):
-            return datetime(value.year, value.month, value.day).isoformat()
-
-        text = str(value).strip()
-        if not text:
-            return None
-
-        # Avoid dateutil turning "2024" into today's month/day.
-        if re.fullmatch(r"\d{4}", text):
-            return f"{text}-01-01T00:00:00"
-
-        if re.fullmatch(r"\d{4}-\d{1,2}", text):
-            return f"{text}-01T00:00:00"
-
-        try:
-            return date_parser.parse(text, fuzzy=True).isoformat()
-        except Exception:
-            return text
-
+    def parsedate(value: Any) -> Optional[str]:
+        if value is None or value == "": return None
+        if isinstance(value, datetime): return value.isoformat()
+        if isinstance(value, date): return datetime(value.year, value.month, value.day).isoformat()
+        if not (text := str(value).strip()): return None
+        if re.fullmatch(r"\d{4}", text): return f"{text}-01-01T00:00:00"
+        if re.fullmatch(r"\d{4}-\d{1,2}", text): return f"{text}-01T00:00:00"
+        try: return date_parser.parse(text, fuzzy=True).isoformat()
+        except Exception: return text
+    '''toint'''
     @staticmethod
-    def _to_int(value: Any) -> Optional[int]:
-        if value is None or value == "":
-            return None
-        try:
-            return int(float(value))
-        except Exception:
-            return None
-
+    def toint(value: Any) -> Optional[int]:
+        if value is None or value == "": return None
+        try: return int(float(value))
+        except Exception: return None
+    '''tofloat'''
     @staticmethod
-    def _to_float(value: Any) -> Optional[float]:
-        if value is None or value == "":
-            return None
-        try:
-            return float(value)
-        except Exception:
-            return None
-
+    def tofloat(value: Any) -> Optional[float]:
+        if value is None or value == "": return None
+        try: return float(value)
+        except Exception: return None
+    '''normalizeinputdict'''
     @classmethod
-    def _normalize_input_dict(cls, data: dict[str, Any]) -> dict[str, Any]:
+    def normalizeinputdict(cls, data: dict[str, Any]) -> dict[str, Any]:
         normalized = dict(data)
-
         for target, aliases in cls.FIELD_ALIASES.items():
-            if normalized.get(target) not in (None, ""):
-                continue
-
-            for alias in aliases:
-                if data.get(alias) not in (None, ""):
-                    normalized[target] = data[alias]
-                    break
-
+            if normalized.get(target) not in (None, ""): continue
+            if (v := next((v for alias in aliases if (v := data.get(alias)) not in (None, "")), None)) is not None: normalized[target] = v
         return normalized
-
-    # ------------------------------------------------------------------
-    # Useful properties
-    # ------------------------------------------------------------------
-
+    '''year'''
     @property
     def year(self) -> Optional[int]:
-        if not self.published_at:
-            return None
-
+        if not self.published_at: return None
         match = re.search(r"\b(19|20)\d{2}\b", self.published_at)
         return int(match.group()) if match else None
-
+    '''main_url'''
     @property
     def main_url(self) -> Optional[str]:
         return self.article_url or self.download_url
-
+    '''short_authors'''
     @property
     def short_authors(self) -> str:
-        if not self.authors:
-            return "Unknown authors"
-
-        if len(self.authors) <= 3:
-            return ", ".join(self.authors)
-
+        if not self.authors: return "noauthors"
+        if len(self.authors) <= 3: return ", ".join(self.authors)
         return f"{self.authors[0]} et al."
-
+    '''identity_key'''
     @property
     def identity_key(self) -> str:
-        """
-        Stable key for deduplication.
-
-        Priority:
-        DOI > arXiv ID > source ID > article URL > title + first authors
-        """
-        raw = (
-            self.doi
-            or self.arxiv_id
-            or self.source_id
-            or self.article_url
-            or f"{self.title.lower()}|{'|'.join(a.lower() for a in self.authors[:3])}"
-        )
-
+        raw = (self.doi or self.arxiv_id or self.source_id or self.article_url or f"{self.title.lower()}|{'|'.join(a.lower() for a in self.authors[:3])}")
         return hashlib.md5(raw.encode("utf-8")).hexdigest()
-
-    # ------------------------------------------------------------------
-    # Public methods
-    # ------------------------------------------------------------------
-
+    '''filename'''
     def filename(self, *, suffix: str = ".pdf", max_len: int = 180) -> str:
-        """
-        Generate a safe local filename for saving PDF or metadata files.
-        """
-        year = self.year or "unknown-year"
-        first_author = self.authors[0] if self.authors else "unknown-author"
-
-        raw_name = f"{year}_{first_author}_{self.title}"
-        safe_name = self._clean_filename(raw_name, max_len=max_len)
-
-        suffix = suffix if suffix.startswith(".") else f".{suffix}"
-        return safe_name + suffix
-
-    def add_tag(self, *tags: str) -> None:
-        self.tags = self._unique_list([*self.tags, *tags])
-
-    def has_tag(self, tag: str) -> bool:
-        tag = self.cleantext(tag)
-        return bool(tag and tag.lower() in {t.lower() for t in self.tags})
-
-    def match_keyword(self, keyword: str) -> bool:
-        keyword = self.cleantext(keyword)
-        if not keyword:
-            return False
-
-        text = " ".join([
-            self.title or "",
-            self.abstract or "",
-            " ".join(self.authors),
-            " ".join(self.keywords),
-            " ".join(self.categories),
-            " ".join(self.tags),
-            self.venue or "",
-        ]).lower()
-
+        year, first_author = self.year or "noyear", self.authors[0] if self.authors else "noauthor"
+        safe_name = self.cleanfilename(f"{year}-{first_author}-{self.title}", max_len=max_len)
+        return safe_name + (suffix if suffix.startswith(".") else f".{suffix}")
+    '''addtag'''
+    def addtag(self, *tags: str) -> None:
+        self.tags = self.uniquelist([*self.tags, *tags])
+    '''hastag'''
+    def hastag(self, tag: str) -> bool:
+        return bool((tag := self.cleantext(tag)) and tag.lower() in {t.lower() for t in self.tags})
+    '''matchkeyword'''
+    def matchkeyword(self, keyword: str) -> bool:
+        if not (keyword := self.cleantext(keyword)): return False
+        text = " ".join([self.title or "", self.abstract or "", " ".join(self.authors), " ".join(self.keywords), " ".join(self.categories), " ".join(self.tags), self.venue or ""]).lower()
         return keyword.lower() in text
-
-    def to_dict(self, *, drop_none: bool = True) -> dict[str, Any]:
-        data = asdict(self)
-
-        if not drop_none:
-            return data
-
-        return {
-            k: v for k, v in data.items()
-            if v is not None and v != [] and v != {}
-        }
-
+    '''todict'''
+    def todict(self, *, drop_none: bool = True) -> dict[str, Any]:
+        data = asdict(self) if not drop_none else {k: v for k, v in asdict(self).items() if v is not None and v != [] and v != {}}
+        return data
+    '''fromdict'''
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "PaperInfo":
-        if not isinstance(data, dict):
-            raise TypeError("PaperInfo.from_dict expects a dict.")
-
-        normalized = cls._normalize_input_dict(data)
-
-        valid_fields = {f.name for f in fields(cls)}
-        kwargs = {
-            key: value
-            for key, value in normalized.items()
-            if key in valid_fields
-        }
-
-        kwargs.setdefault("source", "unknown")
-        kwargs.setdefault("title", "Untitled")
-
-        used_keys = set(kwargs.keys())
-        alias_keys = {
-            alias
-            for aliases in cls.FIELD_ALIASES.values()
-            for alias in aliases
-        }
-
-        extra = {
-            key: value
-            for key, value in data.items()
-            if key not in used_keys and key not in alias_keys
-        }
-
-        if extra:
-            kwargs["extra"] = {
-                **kwargs.get("extra", {}),
-                **extra,
-            }
-
+    def fromdict(cls, data: dict[str, Any]) -> "PaperInfo":
+        if not isinstance(data, dict): raise TypeError("PaperInfo.fromdict expects a dict.")
+        normalized, valid_fields = cls.normalizeinputdict(data), {f.name for f in fields(cls)}
+        kwargs = {key: value for key, value in normalized.items() if key in valid_fields}
+        kwargs.setdefault("source", "nosource"); kwargs.setdefault("title", "notitle"); used_keys = set(kwargs.keys())
+        alias_keys = {alias for aliases in cls.FIELD_ALIASES.values() for alias in aliases}
+        extra = {key: value for key, value in data.items() if key not in used_keys and key not in alias_keys}
+        if extra: kwargs["extra"] = {**kwargs.get("extra", {}), **extra}
         return cls(**kwargs)
-
-    def to_json(self, *, ensure_ascii: bool = False, indent: Optional[int] = 2) -> str:
-        return json.dumps(
-            self.to_dict(drop_none=True),
-            ensure_ascii=ensure_ascii,
-            indent=indent,
-        )
-
+    '''tojson'''
+    def tojson(self, *, ensure_ascii: bool = False, indent: Optional[int] = 2) -> str:
+        return json.dumps(self.todict(drop_none=True), ensure_ascii=ensure_ascii, indent=indent)
+    '''fromjson'''
     @classmethod
-    def from_json(cls, text: str) -> "PaperInfo":
-        return cls.from_dict(json.loads(text))
-
+    def fromjson(cls, text: str) -> "PaperInfo":
+        return cls.fromdict(json.loads(text))
+    '''merge'''
     def merge(self, other: "PaperInfo") -> "PaperInfo":
-        """
-        Merge another PaperInfo into current one.
-
-        Useful when the same paper appears in arXiv, Semantic Scholar, PubMed, etc.
-        Current object has priority; missing fields are filled from other.
-        """
-        if not isinstance(other, PaperInfo):
-            raise TypeError("Can only merge with another PaperInfo.")
-
-        data = self.to_dict(drop_none=False)
-        other_data = other.to_dict(drop_none=False)
-
-        for key, value in other_data.items():
-            if data.get(key) in (None, "", [], {}):
-                data[key] = value
-
-        data["keywords"] = self._unique_list(self.keywords + other.keywords)
-        data["categories"] = self._unique_list(self.categories + other.categories)
-        data["tags"] = self._unique_list(self.tags + other.tags)
-        data["authors"] = self._unique_list(self.authors + other.authors)
-
-        data["extra"] = {
-            **other.extra,
-            **self.extra,
-        }
-
-        return PaperInfo.from_dict(data)
-
+        if not isinstance(other, PaperInfo): raise TypeError("Can only merge with another PaperInfo.")
+        data, other_data = self.todict(drop_none=False), other.todict(drop_none=False)
+        data.update({k: v for k, v in other_data.items() if data.get(k) in (None, "", [], {})})
+        data["keywords"] = self.uniquelist(self.keywords + other.keywords)
+        data["categories"] = self.uniquelist(self.categories + other.categories)
+        data["tags"] = self.uniquelist(self.tags + other.tags)
+        data["authors"] = self.uniquelist(self.authors + other.authors)
+        data["extra"] = {**other.extra, **self.extra}
+        return PaperInfo.fromdict(data)
+    '''hash'''
     def __hash__(self) -> int:
         return hash(self.identity_key)
-
+    '''eq'''
     def __eq__(self, other: object) -> bool:
         return isinstance(other, PaperInfo) and self.identity_key == other.identity_key
