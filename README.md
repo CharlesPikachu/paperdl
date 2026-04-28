@@ -1,18 +1,42 @@
 <div align="center">
-  <img src="./docs/logo.png" width="600"/>
+  <img src="https://raw.githubusercontent.com/CharlesPikachu/paperdl/main/docs/logo.png" width="600" alt="paperdl logo" />
+  <br />
+
+  <a href="https://paperdl.readthedocs.io/">
+    <img src="https://img.shields.io/badge/docs-latest-blue" alt="Docs" />
+  </a>
+  <a href="https://pypi.org/project/paperdl/">
+    <img src="https://img.shields.io/pypi/pyversions/paperdl" alt="PyPI - Python Version" />
+  </a>
+  <a href="https://pypi.org/project/paperdl">
+    <img src="https://img.shields.io/pypi/v/paperdl" alt="PyPI" />
+  </a>
+  <a href="https://github.com/CharlesPikachu/paperdl/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-PolyForm--Noncommercial--1.0.0-blue" alt="License" />
+  </a>
+  <a href="https://pypi.org/project/paperdl/">
+    <img src="https://static.pepy.tech/badge/paperdl" alt="PyPI - Downloads (total)">
+  </a>
+  <a href="https://pypi.org/project/paperdl/">
+    <img src="https://static.pepy.tech/badge/paperdl/month" alt="PyPI - Downloads (month)">
+  </a>
+  <a href="https://pypi.org/project/paperdl/">
+    <img src="https://static.pepy.tech/badge/paperdl/week" alt="PyPI - Downloads (week)">
+  </a>
+  <a href="https://github.com/CharlesPikachu/musicsquare/actions/workflows/pages/pages-build-deployment">
+    <img src="https://github.com/CharlesPikachu/musicsquare/actions/workflows/pages/pages-build-deployment/badge.svg" alt="Pages-Build-Deployment">
+  </a>
+  <a href="https://github.com/CharlesPikachu/paperdl/issues">
+    <img src="https://isitmaintained.com/badge/resolution/CharlesPikachu/paperdl.svg" alt="Issue Resolution" />
+  </a>
+  <a href="https://github.com/CharlesPikachu/paperdl/issues">
+    <img src="https://isitmaintained.com/badge/open/CharlesPikachu/paperdl.svg" alt="Open Issues" />
+  </a>
 </div>
-<br />
 
-[![docs](https://img.shields.io/badge/docs-latest-blue)](https://paperdl.readthedocs.io/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/paperdl)](https://pypi.org/project/paperdl/)
-[![PyPI](https://img.shields.io/pypi/v/paperdl)](https://pypi.org/project/paperdl)
-[![license](https://img.shields.io/github/license/CharlesPikachu/paperdl.svg)](https://github.com/CharlesPikachu/paperdl/blob/master/LICENSE)
-[![PyPI - Downloads](https://pepy.tech/badge/paperdl)](https://pypi.org/project/paperdl/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/paperdl?style=flat-square)](https://pypi.org/project/paperdl/)
-[![issue resolution](https://isitmaintained.com/badge/resolution/CharlesPikachu/paperdl.svg)](https://github.com/CharlesPikachu/paperdl/issues)
-[![open issues](https://isitmaintained.com/badge/open/CharlesPikachu/paperdl.svg)](https://github.com/CharlesPikachu/paperdl/issues)
-
-Documents: https://paperdl.readthedocs.io/
+<p align="center">
+	<a href="https://paperdl.readthedocs.io/" target="_blank"><strong>📚 Documents: paperdl.readthedocs.io</strong></a>
+</p>
 
 
 # Paperdl
@@ -119,30 +143,48 @@ Options:
 ![img](./docs/screenshot.gif)
 
 
-# Projects in Charles_pikachu
+# ⭐ Recommended Projects
 
-- [Games](https://github.com/CharlesPikachu/Games): Create interesting games by pure python.
-- [DecryptLogin](https://github.com/CharlesPikachu/DecryptLogin): APIs for loginning some websites by using requests.
-- [Musicdl](https://github.com/CharlesPikachu/musicdl): A lightweight music downloader written by pure python.
-- [Videodl](https://github.com/CharlesPikachu/videodl): A lightweight video downloader written by pure python.
-- [Pytools](https://github.com/CharlesPikachu/pytools): Some useful tools written by pure python.
-- [PikachuWeChat](https://github.com/CharlesPikachu/pikachuwechat): Play WeChat with itchat-uos.
-- [Pydrawing](https://github.com/CharlesPikachu/pydrawing): Beautify your image or video.
-- [ImageCompressor](https://github.com/CharlesPikachu/imagecompressor): Image compressors written by pure python.
-- [FreeProxy](https://github.com/CharlesPikachu/freeproxy): Collecting free proxies from internet.
-- [Paperdl](https://github.com/CharlesPikachu/paperdl): Search and download paper from specific websites.
-- [Sciogovterminal](https://github.com/CharlesPikachu/sciogovterminal): Browse "The State Council Information Office of the People's Republic of China" in the terminal.
-- [CodeFree](https://github.com/CharlesPikachu/codefree): Make no code a reality.
-- [DeepLearningToys](https://github.com/CharlesPikachu/deeplearningtoys): Some deep learning toys implemented in pytorch.
-- [DataAnalysis](https://github.com/CharlesPikachu/dataanalysis): Some data analysis projects in charles_pikachu.
-- [Imagedl](https://github.com/CharlesPikachu/imagedl): Search and download images from specific websites.
-- [Pytoydl](https://github.com/CharlesPikachu/pytoydl): A toy deep learning framework built upon numpy.
-- [NovelDL](https://github.com/CharlesPikachu/noveldl): Search and download novels from some specific websites.
+| Project                                                    | ⭐ Stars                                                                                                                                               | 📦 Version                                                                                                 | ⏱ Last Update                                                                                                                                                                   | 🛠 Repository                                                        |
+| -------------                                              | ---------                                                                                                                                             | -----------                                                                                                | ----------------                                                                                                                                                                 | --------                                                             |
+| 🎵 **Musicdl**<br/>轻量级无损音乐下载器                    | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/musicdl?style=flat-square)](https://github.com/CharlesPikachu/musicdl)                   | [![Version](https://img.shields.io/pypi/v/musicdl)](https://pypi.org/project/musicdl)                      | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/musicdl?style=flat-square)](https://github.com/CharlesPikachu/musicdl/commits/master)                   | [🛠 Repository](https://github.com/CharlesPikachu/musicdl)           |
+| 🎬 **Videodl**<br/>轻量级高清无水印视频下载器              | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/videodl?style=flat-square)](https://github.com/CharlesPikachu/videodl)                   | [![Version](https://img.shields.io/pypi/v/videofetch)](https://pypi.org/project/videofetch)                | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/videodl?style=flat-square)](https://github.com/CharlesPikachu/videodl/commits/master)                   | [🛠 Repository](https://github.com/CharlesPikachu/videodl)           |
+| 🖼️ **Imagedl**<br/>轻量级海量图片搜索下载器                | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/imagedl?style=flat-square)](https://github.com/CharlesPikachu/imagedl)                   | [![Version](https://img.shields.io/pypi/v/pyimagedl)](https://pypi.org/project/pyimagedl)                  | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/imagedl?style=flat-square)](https://github.com/CharlesPikachu/imagedl/commits/main)                     | [🛠 Repository](https://github.com/CharlesPikachu/imagedl)           |
+| 🖼️ **Paperdl**<br/>轻量级海量图片搜索下载器                | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/paperdl?style=flat-square)](https://github.com/CharlesPikachu/paperdl)                   | [![Version](https://img.shields.io/pypi/v/paperdl)](https://pypi.org/project/paperdl)                      | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/paperdl?style=flat-square)](https://github.com/CharlesPikachu/paperdl/commits/main)                     | [🛠 Repository](https://github.com/CharlesPikachu/paperdl)           |
+| 🌐 **FreeProxy**<br/>全球海量高质量免费代理采集器          | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/freeproxy?style=flat-square)](https://github.com/CharlesPikachu/freeproxy)               | [![Version](https://img.shields.io/pypi/v/pyfreeproxy)](https://pypi.org/project/pyfreeproxy)              | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/freeproxy?style=flat-square)](https://github.com/CharlesPikachu/freeproxy/commits/master)               | [🛠 Repository](https://github.com/CharlesPikachu/freeproxy)         |
+| 🌐 **MusicSquare**<br/>简易音乐搜索下载和播放网页          | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/musicsquare?style=flat-square)](https://github.com/CharlesPikachu/musicsquare)           | [![Version](https://img.shields.io/pypi/v/musicdl)](https://pypi.org/project/musicdl)                      | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/musicsquare?style=flat-square)](https://github.com/CharlesPikachu/musicsquare/commits/main)             | [🛠 Repository](https://github.com/CharlesPikachu/musicsquare)       |
+| 🌐 **FreeGPTHub**<br/>真正免费的GPT统一接口                | [![Stars](https://img.shields.io/github/stars/CharlesPikachu/FreeGPTHub?style=flat-square)](https://github.com/CharlesPikachu/FreeGPTHub)             | [![Version](https://img.shields.io/pypi/v/freegpthub)](https://pypi.org/project/freegpthub)                | [![Last Commit](https://img.shields.io/github/last-commit/CharlesPikachu/FreeGPTHub?style=flat-square)](https://github.com/CharlesPikachu/FreeGPTHub/commits/main)               | [🛠 Repository](https://github.com/CharlesPikachu/FreeGPTHub)        |
 
 
-# More
+# 📚 Citation
 
-#### WeChat Official Accounts
+If you use this project in your research, please cite the repository.
 
-*Charles_pikachu*  
-![img](./docs/pikachu.jpg)
+```
+@misc{musicdl2020,
+    author = {Zhenchao Jin},
+    title = {Paperdl: Search and download paper from specific websites},
+    year = {2022},
+    publisher = {GitHub},
+    journal = {GitHub repository},
+    howpublished = {\url{https://github.com/CharlesPikachu/paperdl}},
+}
+```
+
+
+# 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=CharlesPikachu/paperdl&type=date&legend=top-left)](https://www.star-history.com/#CharlesPikachu/paperdl&type=date&legend=top-left)
+
+
+# ☕ Appreciation (赞赏 / 打赏)
+
+| WeChat Appreciation QR Code (微信赞赏码)                                                                                       | Alipay Appreciation QR Code (支付宝赞赏码)                                                                                     |
+| :--------:                                                                                                                     | :----------:                                                                                                                   |
+| <img src="https://raw.githubusercontent.com/CharlesPikachu/musicdl/master/.github/pictures/wechat_reward.jpg" width="260" />   | <img src="https://raw.githubusercontent.com/CharlesPikachu/musicdl/master/.github/pictures/alipay_reward.png" width="260" />   |
+
+
+# 📢 WeChat Official Account (微信公众号):
+
+Charles的皮卡丘 (*Charles_pikachu*)  
+![img](https://raw.githubusercontent.com/CharlesPikachu/paperdl/main/docs/pikachu.jpg)

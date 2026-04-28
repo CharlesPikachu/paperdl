@@ -36,7 +36,7 @@ setup(
     license=paperdl.__license__,
     include_package_data=True,
     entry_points={'console_scripts': ['paperdl = paperdl.paperdl:paperdlcmd']},
-    install_requires=[lab.strip('\n') for lab in list(open('requirements.txt', 'r').readlines())],
+    install_requires=[lab.strip('\n') for lab in list(open('requirements.txt', 'r').readlines()) if lab.strip('\n')],
     zip_safe=True,
     packages=find_packages()
 )
