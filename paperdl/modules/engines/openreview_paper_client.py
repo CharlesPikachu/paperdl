@@ -44,11 +44,9 @@ class OpenReviewPaperClient(BasePaperClient):
         if accepted_only and venue_id: content = {**(content or {}), "venueid": venue_id}
         if not invitation and not content: raise ValueError("OpenReview search requires either `venue_id`, `invitation`, or a `content` filter. For example: venue_id='ICLR.cc/2024/Conference'.")
         task_id = self.addtask(f"Fetching OpenReview notes: {(venue_id or invitation or 'content filter')}", total=None)
-        try: notes = await self.getallnotes(invitation=invitation, content=content, details=details)
-        finally: self.removetask(task_id)
-        paper_infos = [self.notetopaperinfo(note, query=query, rank=i + 1) for i, note in enumerate(notes)]
+        paper_infos = [self.notetopaperinfo(note, query=query, rank=i + 1) for i, note in enumerate(await self.getallnotes(invitation=invitation, content=content, details=details))]
         if query and client_side_filter: paper_infos = [p for p in paper_infos if query.lower().strip() in " ".join([p.title or "", p.abstract or "", " ".join(p.authors), " ".join(p.keywords), " ".join(p.categories), " ".join(p.tags)]).lower()]
-        paper_infos = paper_infos[:total_results]
+        paper_infos = paper_infos[:total_results]; self.removetask(task_id)
         self.log(f"OpenReview search finished. Found {len(paper_infos)} papers.")
         return paper_infos
     '''infersubmissioninvitation'''
