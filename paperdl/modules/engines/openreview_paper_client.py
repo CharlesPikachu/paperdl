@@ -1,39 +1,29 @@
+'''
+Function:
+    Implementation of OpenReviewPaperClient
+Author:
+    Zhenchao Jin
+WeChat Official Account (微信公众号):
+    Charles的皮卡丘
+'''
 from __future__ import annotations
-
-import asyncio
-from pathlib import Path
-from typing import Any, Optional, Sequence
-
 import aiofiles
+import openreview
+from pathlib import Path
+from typing import Any, Optional
+from .base_paper_client import BasePaperClient
+from ..utils import PaperInfo, PaperDownloadError
 
 
+'''OpenReviewPaperClient'''
 class OpenReviewPaperClient(BasePaperClient):
-    """
-    Async OpenReview client.
-
-    This class wraps the official synchronous openreview-py client
-    inside BasePaperClient.run_blocking(), so external APIs remain async.
-
-    Typical use cases:
-    - Search submissions from a venue.
-    - Search notes from a specific invitation.
-    - Download public or credential-protected PDFs.
-    """
-
-    source = "OpenReview"
-
-    def __init__(
-        self,
-        *,
-        baseurl: str = "https://api2.openreview.net",
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+    source = "OpenReviewPaperClient"
+    def __init__(self, *, baseurl: str = "https://api2.openreview.net", username: Optional[str] = None, password: Optional[str] = None,
         api_version: int = 2,
         timeout: float = 60.0,
         concurrency: int = 5,
         max_retries: int = 3,
         retry_backoff: float = 1.5,
-        user_agent: str = "PaperClient/OpenReview/0.1",
         headers: Optional[dict[str, str]] = None,
         cookies: Optional[dict[str, str]] = None,
         cookie_file: Optional[str | Path] = None,
@@ -44,12 +34,11 @@ class OpenReviewPaperClient(BasePaperClient):
         max_detail_tasks: int = 20,
         verbose: bool = True,
     ) -> None:
-        super().__init__(
+        super(OpenReviewPaperClient, self).__init__(
             timeout=timeout,
             concurrency=concurrency,
             max_retries=max_retries,
             retry_backoff=retry_backoff,
-            user_agent=user_agent,
             headers=headers,
             cookies=cookies,
             cookie_file=cookie_file,
@@ -74,7 +63,7 @@ class OpenReviewPaperClient(BasePaperClient):
         await super().open()
 
         if self._or_client is None:
-            self._or_client = await self.run_blocking(
+            self._or_client = await self.runblocking(
                 self._create_openreview_client,
                 progress_description="Initializing OpenReview client",
             )

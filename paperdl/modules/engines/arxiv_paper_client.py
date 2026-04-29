@@ -10,9 +10,9 @@ import re
 import asyncio
 import feedparser
 from pathlib import Path
-from .base import BasePaperClient
 from typing import Optional, Sequence
 from feedparser.util import FeedParserDict
+from .base_paper_client import BasePaperClient
 from ..utils import PaperInfo, PaperDownloadError, PaperRequestError
 
 

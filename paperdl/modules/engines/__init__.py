@@ -1,3 +1,3 @@
 '''initialize'''
-from .base import BasePaperClient
-from .arxiv import ArxivPaperClient
+from .base_paper_client import BasePaperClient
+from .arxiv_paper_client import ArxivPaperClient

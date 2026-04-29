@@ -6,3 +6,4 @@ ftfy>=6.2,<7.0
 pathvalidate>=3.2,<4.0
 python-dateutil>=2.9,<3.0
 rich>=14.0,<16.0
+openreview-py>=2.0.0,<4.0.0
