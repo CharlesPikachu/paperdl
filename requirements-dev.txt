@@ -1,0 +1,2 @@
+types-python-dateutil>=2.9,<3.0
+types-aiofiles>=25.1,<26.0

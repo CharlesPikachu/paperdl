@@ -1,6 +1,8 @@
-requests
-beautifulsoup4
-lxml
-click
-prettytable
-alive-progress
+aiohttp>=3.9,<4.0
+aiofiles>=23.2,<26.0
+feedparser>=6.0.11,<7.0
+beautifulsoup4>=4.13,<5.0
+ftfy>=6.2,<7.0
+pathvalidate>=3.2,<4.0
+python-dateutil>=2.9,<3.0
+rich>=14.0,<16.0
