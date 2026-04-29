@@ -12,7 +12,9 @@ import random
 import aiohttp
 import asyncio
 import aiofiles
+import warnings
 from pathlib import Path
+from rich.text import Text
 from functools import partial
 from rich.console import Console
 from abc import ABC, abstractmethod
@@ -20,6 +22,28 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Optional, Sequence, Callable
 from ..utils import PaperInfo, PaperRequestError, PaperDownloadError, cookies2dict
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, DownloadColumn, TransferSpeedColumn, TimeRemainingColumn, TimeElapsedColumn, MofNCompleteColumn
+warnings.filterwarnings('ignore')
+
+
+'''ConditionalDownloadColumn'''
+class ConditionalDownloadColumn(DownloadColumn):
+    def render(self, task):
+        if task.fields.get("kind") != "download": return Text("")
+        return super().render(task)
+
+
+'''ConditionalTransferSpeedColumn'''
+class ConditionalTransferSpeedColumn(TransferSpeedColumn):
+    def render(self, task):
+        if task.fields.get("kind") != "download": return Text("")
+        return super().render(task)
+
+
+'''ConditionalMofNCompleteColumn'''
+class ConditionalMofNCompleteColumn(MofNCompleteColumn):
+    def render(self, task):
+        if task.fields.get("kind") == "download": return Text("")
+        return super().render(task)
 
 
 '''BasePaperClient'''
@@ -88,7 +112,7 @@ class BasePaperClient(ABC):
     '''ensureprogress'''
     def ensureprogress(self) -> Optional[Progress]:
         if not self.show_progress or Progress is None: return None
-        if self._progress is None: self._progress = Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), TaskProgressColumn(), MofNCompleteColumn(), DownloadColumn(), TransferSpeedColumn(), TimeElapsedColumn(), TimeRemainingColumn(), console=self.console, transient=self.progress_transient)
+        if self._progress is None: self._progress = Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), TaskProgressColumn(), ConditionalMofNCompleteColumn(), ConditionalDownloadColumn(), ConditionalTransferSpeedColumn(), TimeElapsedColumn(), TimeRemainingColumn(), console=self.console, transient=self.progress_transient)
         if not self._progress_started: self._progress.start(); self._progress_started = True
         return self._progress
     '''stopprogress'''
@@ -96,9 +120,9 @@ class BasePaperClient(ABC):
         if self._progress and self._progress_started: self._progress.stop()
         self._progress, self._progress_started = None, False
     '''addtask'''
-    def addtask(self, description: str, *, total: Optional[float] = None, visible: bool = True) -> Optional[int]:
+    def addtask(self, description: str, *, total: Optional[float] = None, visible: bool = True, kind: str = "generic") -> Optional[int]:
         if (progress := self.ensureprogress()) is None: return None
-        return progress.add_task(description, total=total, visible=visible)
+        return progress.add_task(description, total=total, visible=visible, kind=kind)
     '''updatetask'''
     def updatetask(self, task_id: Optional[int], *, advance: Optional[float] = None, completed: Optional[float] = None, total: Optional[float] = None, description: Optional[str] = None, visible: Optional[bool] = None) -> None:
         if task_id is None or self._progress is None: return
@@ -145,7 +169,7 @@ class BasePaperClient(ABC):
         return self._executor
     '''runblocking'''
     async def runblocking(self, func: Callable, *args, progress_description: Optional[str] = None, **kwargs) -> Any:
-        task_id = self.addtask(progress_description, total=None) if progress_description else None
+        task_id = self.addtask(progress_description, total=None, kind="generic") if progress_description else None
         try:
             loop = asyncio.get_running_loop()
             return await loop.run_in_executor(self.executor, partial(func, *args, **kwargs))
@@ -154,7 +178,7 @@ class BasePaperClient(ABC):
     '''requestbytes'''
     async def requestbytes(self, url: str, *, method: str = "GET", params: Optional[dict[str, Any]] = None, data: Any = None, json_data: Any = None, headers: Optional[dict[str, str]] = None, cookies: Optional[dict[str, str]] = None, auth: Optional[aiohttp.BasicAuth] = None, proxy: Optional[str] = None, allow_statuses: Optional[set[int]] = None, progress_description: Optional[str] = None) -> bytes:
         await self.open(); last_error: Optional[BaseException] = None; allow_statuses = allow_statuses or set()
-        task_id = self.addtask(progress_description, total=None) if progress_description else None
+        task_id = self.addtask(progress_description, total=None, kind="generic") if progress_description else None
         try:
             for attempt in range(self.max_retries + 1):
                 try:
@@ -185,7 +209,7 @@ class BasePaperClient(ABC):
         await self.open(); (target_path := Path(target_path)).parent.mkdir(parents=True, exist_ok=True)
         if target_path.exists() and not overwrite: return target_path
         tmp_target_path = target_path.with_suffix(target_path.suffix + ".part"); last_error: Optional[BaseException] = None; downloaded = 0
-        task_id = self.addtask(progress_description or f"Downloading {target_path.name}", total=None) if show_detail else None
+        task_id = self.addtask(progress_description or f"Downloading {target_path.name}", total=None, kind="download") if show_detail else None
         try:
             for attempt in range(self.max_retries + 1):
                 try:
@@ -207,23 +231,27 @@ class BasePaperClient(ABC):
             raise PaperDownloadError(f"Download failed: {url}") from last_error
         finally:
             if task_id is not None and self.progress_mode != "detailed": self.removetask(task_id)
-    '''downloadmany'''
-    async def downloadmany(self, papers: Sequence["PaperInfo"], output_dir: str | Path = "papers", *, overwrite: bool = False, return_exceptions: bool = False) -> list[Path]:
-        if not (papers := list(papers)): return []
-        show_detail, master_task = self.shouldshowdetailtasks(len(papers)), self.addtask(f"Downloading papers from {self.source}", total=len(papers))
-        self.log(f"Start downloading {len(papers)} papers from {self.source} with concurrency={self.concurrency}.")
-        async def download_one_func(paper: "PaperInfo") -> Path:
-            try: return await self.downloadpaper(paper, output_dir=output_dir, overwrite=overwrite, show_detail=show_detail)
+    '''download'''
+    async def download(self, paper_infos: Sequence["PaperInfo"], output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, return_exceptions: bool = False) -> list[Path]:
+        if not (paper_infos := list(paper_infos)): return []
+        show_detail, master_task = self.shouldshowdetailtasks(len(paper_infos)), self.addtask(f"Downloading papers from {self.source}", total=len(paper_infos), kind="generic")
+        self.log(f"Start downloading {len(paper_infos)} papers from {self.source} with concurrency={self.concurrency}.")
+        async def download_one_func(paper_info: "PaperInfo") -> Path:
+            try: return await self.downloadpaper(paper_info, output_dir=output_dir, overwrite=overwrite, show_detail=show_detail)
             finally: self.updatetask(master_task, advance=1)
-        results = await asyncio.gather(*[download_one_func(paper) for paper in papers], return_exceptions=return_exceptions)
-        self.updatetask(master_task, completed=len(papers), description=f"Finished downloading papers from {self.source}")
+        results = await asyncio.gather(*[download_one_func(paper_info) for paper_info in paper_infos], return_exceptions=return_exceptions)
+        self.updatetask(master_task, completed=len(paper_infos), description=f"Finished downloading papers from {self.source}")
         if self.progress_mode != "detailed": self.removetask(master_task)
         return results
+    '''downloadpaper'''
+    @abstractmethod
+    async def downloadpaper(self, paper_info: "PaperInfo", output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, show_detail: bool = True) -> Path:
+        """Download one paper and return local file path."""
     '''search'''
     @abstractmethod
     async def search(self, *args, **kwargs) -> list["PaperInfo"]:
         """Search papers and return PaperInfo objects."""
-    '''downloadpaper'''
+    '''searchpaper'''
     @abstractmethod
-    async def downloadpaper(self, paper: "PaperInfo", output_dir: str | Path = "papers", *, overwrite: bool = False, show_detail: bool = True) -> Path:
-        """Download one paper and return local file path."""
+    async def searchpaper(self, *args, **kwargs) -> list["PaperInfo"]:
+        """Search one-page papers and return PaperInfo objects."""
