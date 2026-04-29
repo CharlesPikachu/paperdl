@@ -25,8 +25,8 @@ class ArxivPaperClient(BasePaperClient):
     def __init__(self, *, api_delay: float = 3.0, timeout: float = 60.0, concurrency: int = 5, max_retries: int = 3, retry_backoff: float = 1.5, headers: Optional[dict[str, str]] = None, cookies: Optional[dict[str, str]] = None, cookie_file: Optional[str | Path] = None, proxy: Optional[str] = None, thread_workers: int = 4, show_progress: bool = True, progress_mode: str = "auto", max_detail_tasks: int = 20, verbose: bool = True) -> None:
         super(ArxivPaperClient, self).__init__(timeout=timeout, concurrency=concurrency, max_retries=max_retries, retry_backoff=retry_backoff, headers=headers, cookies=cookies, cookie_file=cookie_file, proxy=proxy, thread_workers=thread_workers, show_progress=show_progress, progress_mode=progress_mode, max_detail_tasks=max_detail_tasks, verbose=verbose)
         self.api_delay = api_delay if isinstance(api_delay, (int, float)) else None
-    '''searchpaper'''
-    async def searchpaper(self, query: str, *, max_results: int = 20, start: int = 0, categories: Optional[Sequence[str]] = None, search_field: str = "all", sort_by: str = "submittedDate", sort_order: str = "descending", raw_query: bool = False, show_progress: bool = False) -> list["PaperInfo"]:
+    '''querypage'''
+    async def querypage(self, query: str, *, max_results: int = 20, start: int = 0, categories: Optional[Sequence[str]] = None, search_field: str = "all", sort_by: str = "submittedDate", sort_order: str = "descending", raw_query: bool = False, show_progress: bool = False) -> list["PaperInfo"]:
         # basic judgement for valid search
         if sort_by not in self.VALID_SORT_BY: raise ValueError(f"Invalid sort_by: {sort_by}")
         if sort_order not in self.VALID_SORT_ORDER: raise ValueError(f"Invalid sort_order: {sort_order}")
@@ -47,7 +47,7 @@ class ArxivPaperClient(BasePaperClient):
             current_size = min(page_size, total_results - start)
             if start > 0 and self.api_delay > 0: await asyncio.sleep(self.api_delay)
             self.updatetask(search_task, description=f"Searching arXiv page {page_idx}/{total_pages}: {query[:50]}")
-            page_paper_infos = await self.searchpaper(query=query, max_results=current_size, start=start, categories=categories, search_field=search_field, sort_by=sort_by, sort_order=sort_order, raw_query=raw_query, show_progress=False)
+            page_paper_infos = await self.querypage(query=query, max_results=current_size, start=start, categories=categories, search_field=search_field, sort_by=sort_by, sort_order=sort_order, raw_query=raw_query, show_progress=False)
             paper_infos.extend(page_paper_infos); self.updatetask(search_task, advance=1)
             if len(page_paper_infos) < current_size: break
         if deduplicate: paper_infos = list({p.identity_key: p for p in paper_infos}.values())
@@ -64,12 +64,12 @@ class ArxivPaperClient(BasePaperClient):
         if not (ids := [x for x in [self.cleanarxivid(x) for x in arxiv_ids if x] if x]): return []
         xml = await self.requesttext(self.API_URL, params={"id_list": ",".join(ids), "max_results": len(ids)}, progress_description=f"Fetching {len(ids)} arXiv IDs")
         return await self.parsefeed(xml, query=f"id_list:{','.join(ids)}", start=0)
-    '''downloadpaper'''
-    async def downloadpaper(self, paper_info: "PaperInfo", output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, show_detail: bool = True) -> Path:
+    '''downloaditem'''
+    async def downloaditem(self, paper_info: "PaperInfo", output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, show_detail: bool = True) -> Path:
         if not (url := paper_info.download_url or self.pdfurlfromarxivid(paper_info.arxiv_id)): raise PaperDownloadError(f"No download URL available for: {paper_info.title}")
         path, short_title = Path(output_dir) / paper_info.filename(suffix=".pdf"), paper_info.title
         short_title = short_title[:67] + "..."  if len(short_title) > 70 else short_title
-        return await self.downloadurl(url, path, overwrite=overwrite, progress_description=f"Downloading: {short_title}", show_detail=show_detail)
+        return await self.downloadfile(url, path, overwrite=overwrite, progress_description=f"Downloading: {short_title}", show_detail=show_detail)
     '''buildquery'''
     def buildquery(self, *, query: str, categories: Optional[Sequence[str]] = None, search_field: str = "all") -> str:
         categories, query, parts = [c.strip() for c in (categories or []) if c and c.strip()], (query or "").strip(), []

@@ -204,8 +204,8 @@ class BasePaperClient(ABC):
     async def requestjson(self, url: str, **kwargs) -> Any:
         text = await self.requesttext(url, **kwargs)
         return json.loads(text)
-    '''downloadurl'''
-    async def downloadurl(self, url: str, target_path: str | Path, *, overwrite: bool = False, chunk_size: int = 1024 * 128, headers: Optional[dict[str, str]] = None, cookies: Optional[dict[str, str]] = None, proxy: Optional[str] = None, progress_description: Optional[str] = None, show_detail: bool = True) -> Path:
+    '''downloadfile'''
+    async def downloadfile(self, url: str, target_path: str | Path, *, overwrite: bool = False, chunk_size: int = 1024 * 128, headers: Optional[dict[str, str]] = None, cookies: Optional[dict[str, str]] = None, proxy: Optional[str] = None, progress_description: Optional[str] = None, show_detail: bool = True) -> Path:
         await self.open(); (target_path := Path(target_path)).parent.mkdir(parents=True, exist_ok=True)
         if target_path.exists() and not overwrite: return target_path
         tmp_target_path = target_path.with_suffix(target_path.suffix + ".part"); last_error: Optional[BaseException] = None; downloaded = 0
@@ -237,21 +237,17 @@ class BasePaperClient(ABC):
         show_detail, master_task = self.shouldshowdetailtasks(len(paper_infos)), self.addtask(f"Downloading papers from {self.source}", total=len(paper_infos), kind="generic")
         self.log(f"Start downloading {len(paper_infos)} papers from {self.source} with concurrency={self.concurrency}.")
         async def download_one_func(paper_info: "PaperInfo") -> Path:
-            try: return await self.downloadpaper(paper_info, output_dir=output_dir, overwrite=overwrite, show_detail=show_detail)
+            try: return await self.downloaditem(paper_info, output_dir=output_dir, overwrite=overwrite, show_detail=show_detail)
             finally: self.updatetask(master_task, advance=1)
         results = await asyncio.gather(*[download_one_func(paper_info) for paper_info in paper_infos], return_exceptions=return_exceptions)
         self.updatetask(master_task, completed=len(paper_infos), description=f"Finished downloading papers from {self.source}")
         if self.progress_mode != "detailed": self.removetask(master_task)
         return results
-    '''downloadpaper'''
+    '''downloaditem'''
     @abstractmethod
-    async def downloadpaper(self, paper_info: "PaperInfo", output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, show_detail: bool = True) -> Path:
+    async def downloaditem(self, paper_info: "PaperInfo", output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, show_detail: bool = True) -> Path:
         """Download one paper and return local file path."""
     '''search'''
     @abstractmethod
     async def search(self, *args, **kwargs) -> list["PaperInfo"]:
         """Search papers and return PaperInfo objects."""
-    '''searchpaper'''
-    @abstractmethod
-    async def searchpaper(self, *args, **kwargs) -> list["PaperInfo"]:
-        """Search one-page papers and return PaperInfo objects."""

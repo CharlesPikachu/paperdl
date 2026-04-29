@@ -8,7 +8,7 @@ WeChat Official Account (微信公众号):
 '''
 import random
 import asyncio
-from paperdl.modules import ArxivPaperClient
+from modules import ArxivPaperClient
 
 
 '''test search function'''
@@ -24,7 +24,7 @@ asyncio.run(test_search())
 '''test download function'''
 async def test_download():
     async with ArxivPaperClient(concurrency=5, show_progress=True, progress_mode="auto", max_detail_tasks=10, verbose=True) as client:
-        paper_infos = await client.searchpaper("vision language model", categories=["cs.CV"], max_results=8)
+        paper_infos = await client.querypage("vision language model", categories=["cs.CV"], max_results=8)
         save_paths = await client.download(paper_infos, output_dir="downloads/ArxivPaperClient", overwrite=False)
         print('\n'.join([str(p) for p in save_paths]))
 
