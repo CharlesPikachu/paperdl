@@ -89,7 +89,7 @@ class BasePaperClient(ABC):
         self._progress_started = False
         self._progress: Optional[Progress] = None
         # request headers
-        self.headers = headers or {}
+        self.headers = headers or {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
         # auth settings
         self.basic_auth = aiohttp.BasicAuth(*basic_auth) if isinstance(basic_auth, tuple) else basic_auth
         # misc settings
@@ -207,7 +207,8 @@ class BasePaperClient(ABC):
                             if resp.status in self.retry_statuses: raise PaperRequestError(f"Temporary HTTP {resp.status}: {content[:300]!r}")
                             if resp.status >= 400: raise PaperRequestError(f"HTTP {resp.status}: {content[:300]!r}")
                             return content
-                except (aiohttp.ClientError, asyncio.TimeoutError, PaperRequestError) as last_error:
+                except (aiohttp.ClientError, asyncio.TimeoutError, PaperRequestError) as exc:
+                    last_error = exc
                     if attempt >= self.max_retries: break
                     await asyncio.sleep(self.retry_backoff * (2 ** attempt) + random.random() * 0.2)
             raise PaperRequestError(f"Request failed: {url}") from last_error
@@ -241,11 +242,12 @@ class BasePaperClient(ABC):
                                     if chunk: await f.write(chunk); downloaded += (n := len(chunk)); self.updatetask(task_id, advance=n) if task_id is not None else None
                     if task_id is not None: self.updatetask(task_id, completed=total or downloaded, description=f"Downloaded {target_path.name}")
                     tmp_target_path.replace(target_path); return target_path
-                except (aiohttp.ClientError, asyncio.TimeoutError, PaperDownloadError) as last_error:
+                except (aiohttp.ClientError, asyncio.TimeoutError, PaperDownloadError) as exc:
+                    last_error = exc
                     if tmp_target_path.exists(): tmp_target_path.unlink(missing_ok=True)
                     if attempt >= self.max_retries: break
                     await asyncio.sleep(self.retry_backoff * (2 ** attempt) + random.random() * 0.2)
-            raise PaperDownloadError(f"Download failed: {url}") from last_error
+            raise PaperDownloadError(f"Download failed: {url}. Reason: {last_error}") from last_error
         finally:
             if task_id is not None and self.progress_mode != "detailed": self.removetask(task_id)
     '''validatepdffile'''

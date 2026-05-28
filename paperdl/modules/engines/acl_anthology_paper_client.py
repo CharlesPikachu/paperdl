@@ -24,7 +24,7 @@ class ACLAnthologyPaperClient(BasePaperClient):
     XML_INDEX_URL = "https://api.github.com/repos/acl-org/acl-anthology/contents/data/xml"
     XML_RAW_URL = "https://raw.githubusercontent.com/acl-org/acl-anthology/master/data/xml/{collection_id}.xml"
     def __init__(self, *, api_delay: float = 0.2, timeout: float = 60.0, concurrency: int = 5, max_retries: int = 3, retry_backoff: float = 1.5, headers: Optional[dict[str, str]] = None, cookies: Optional[dict[str, str]] = None, cookie_file: Optional[str | Path] = None, proxy: Optional[str] = None, thread_workers: int = 4, show_progress: bool = True, progress_mode: str = "auto", max_detail_tasks: int = 20, verbose: bool = True) -> None:
-        default_headers = {"Accept": "application/vnd.github+json", "User-Agent": "paper-client/1.0"}
+        default_headers = {"Accept": "application/vnd.github+json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
         super(ACLAnthologyPaperClient, self).__init__(timeout=timeout, concurrency=concurrency, max_retries=max_retries, retry_backoff=retry_backoff, headers={**default_headers, **(headers or {})}, cookies=cookies, cookie_file=cookie_file, proxy=proxy, thread_workers=thread_workers, show_progress=show_progress, progress_mode=progress_mode, max_detail_tasks=max_detail_tasks, verbose=verbose)
         self.api_delay = api_delay if isinstance(api_delay, (int, float)) else 0.0
     '''listxmlcollections'''
