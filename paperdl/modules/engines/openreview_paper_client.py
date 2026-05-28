@@ -66,7 +66,7 @@ class OpenReviewPaperClient(BasePaperClient):
         if prefer_attachment_api: return await self.downloadbyattachmentapi(note_id, path, overwrite=overwrite, show_detail=show_detail)
         download_url = paper_info.download_url or f"https://openreview.net/pdf?id={note_id}"
         try:
-            return await self.downloadfile(download_url, path, overwrite=overwrite, progress_description=f"Downloading OpenReview PDF: {paper_info.title[:70]}", show_detail=show_detail)
+            return await self.downloadvalidatedpdf(download_url, path, overwrite=overwrite, progress_description=f"Downloading OpenReview PDF: {paper_info.title[:70]}", show_detail=show_detail, min_bytes=4 * 1024, min_pages=1)
         except Exception:
             if not fallback_to_attachment_api: raise PaperDownloadError(f"Fail to access {download_url}")
             return await self.downloadbyattachmentapi(note_id, path, overwrite=overwrite, show_detail=show_detail)
@@ -79,7 +79,12 @@ class OpenReviewPaperClient(BasePaperClient):
             pdf_bytes = await self.runblocking(self._or_client.get_attachment, field_name="pdf", id=note_id)
             tmp_target_path = target_path.with_suffix(target_path.suffix + ".part")
             async with aiofiles.open(tmp_target_path, "wb") as fp: await fp.write(pdf_bytes)
-            tmp_target_path.replace(target_path); return target_path
+            tmp_target_path.replace(target_path)
+            validation = self.validatepdffile(target_path, min_bytes=4 * 1024, min_pages=1)
+            if not validation.valid:
+                target_path.unlink(missing_ok=True)
+                raise PaperDownloadError(f"Invalid OpenReview attachment PDF: {validation.reason}")
+            return target_path
         finally:
             self.removetask(task_id)
     '''notetopaperinfo'''

@@ -69,7 +69,7 @@ class ArxivPaperClient(BasePaperClient):
         if not (url := paper_info.download_url or self.pdfurlfromarxivid(paper_info.arxiv_id)): raise PaperDownloadError(f"No download URL available for: {paper_info.title}")
         path, short_title = Path(output_dir) / paper_info.filename(suffix=".pdf"), paper_info.title
         short_title = short_title[:67] + "..."  if len(short_title) > 70 else short_title
-        return await self.downloadvalidatedpdf(url, path, overwrite=overwrite, progress_description=f"Downloading: {short_title}", show_detail=show_detail, min_bytes=4 * 1024, min_pages=1)
+        return await self.downloadfile(url, path, overwrite=overwrite, progress_description=f"Downloading: {short_title}", show_detail=show_detail)
     '''buildquery'''
     def buildquery(self, *, query: str, categories: Optional[Sequence[str]] = None, search_field: str = "all") -> str:
         categories, query, parts = [c.strip() for c in (categories or []) if c and c.strip()], (query or "").strip(), []

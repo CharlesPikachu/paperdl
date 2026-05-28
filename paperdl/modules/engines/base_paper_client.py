@@ -7,6 +7,7 @@ WeChat Official Account (微信公众号):
     Charles的皮卡丘
 '''
 from __future__ import annotations
+import re
 import json
 import random
 import aiohttp
@@ -15,6 +16,7 @@ import aiofiles
 import warnings
 from pathlib import Path
 from rich.text import Text
+from pypdf import PdfReader
 from functools import partial
 from rich.console import Console
 from abc import ABC, abstractmethod
@@ -27,6 +29,7 @@ warnings.filterwarnings('ignore')
 
 '''ConditionalDownloadColumn'''
 class ConditionalDownloadColumn(DownloadColumn):
+    '''render'''
     def render(self, task):
         if task.fields.get("kind") != "download": return Text("")
         return super().render(task)
@@ -34,6 +37,7 @@ class ConditionalDownloadColumn(DownloadColumn):
 
 '''ConditionalTransferSpeedColumn'''
 class ConditionalTransferSpeedColumn(TransferSpeedColumn):
+    '''render'''
     def render(self, task):
         if task.fields.get("kind") != "download": return Text("")
         return super().render(task)
@@ -41,9 +45,22 @@ class ConditionalTransferSpeedColumn(TransferSpeedColumn):
 
 '''ConditionalMofNCompleteColumn'''
 class ConditionalMofNCompleteColumn(MofNCompleteColumn):
+    '''render'''
     def render(self, task):
         if task.fields.get("kind") == "download": return Text("")
         return super().render(task)
+
+
+'''PDFValidationResult'''
+class PDFValidationResult:
+    def __init__(self, valid: bool, reason: str = "", pages: Optional[int] = None, size: int = 0) -> None:
+        self.size = size
+        self.pages = pages
+        self.valid = valid
+        self.reason = reason
+    '''bool'''
+    def __bool__(self) -> bool:
+        return self.valid
 
 
 '''BasePaperClient'''
@@ -231,6 +248,35 @@ class BasePaperClient(ABC):
             raise PaperDownloadError(f"Download failed: {url}") from last_error
         finally:
             if task_id is not None and self.progress_mode != "detailed": self.removetask(task_id)
+    '''validatepdffile'''
+    def validatepdffile(self, path: str | Path, *, min_bytes: int = 1024, min_pages: int = 1, require_eof: bool = True) -> PDFValidationResult:
+        if not (path := Path(path)).exists() or not path.is_file(): return PDFValidationResult(False, "file does not exist", size=0)
+        if (size := path.stat().st_size) < min_bytes: return PDFValidationResult(False, f"file is too small: {size} bytes", size=size)
+        head, tail = (data := path.read_bytes())[:1024].lstrip(), data[-4096:]
+        if not head.startswith(b"%PDF-"):
+            if head[:64].lower().startswith((b"<!doctype html", b"<html", b"<?xml")): return PDFValidationResult(False, "downloaded content is HTML/XML instead of PDF", size=size)
+            return PDFValidationResult(False, "missing PDF header", size=size)
+        if require_eof and b"%%EOF" not in tail: return PDFValidationResult(False, "missing PDF EOF marker", size=size)
+        if (pages := self.countpdfpages(path, data=data)) is not None and pages < min_pages: return PDFValidationResult(False, f"PDF has too few pages: {pages}", pages=pages, size=size)
+        return PDFValidationResult(True, "ok", pages=pages, size=size)
+    '''countpdfpages'''
+    @staticmethod
+    def countpdfpages(path: str | Path, *, data: Optional[bytes] = None) -> Optional[int]:
+        try: return len(PdfReader(str(path)).pages)
+        except Exception: pass
+        try: data = Path(path).read_bytes() if data is None else data
+        except Exception: return None
+        try: return len(re.findall(rb"/Type\s*/Page\b", data)) or None
+        except Exception: return None
+    '''downloadvalidatedpdf'''
+    async def downloadvalidatedpdf(self, url: str, target_path: str | Path, *, overwrite: bool = False, progress_description: Optional[str] = None, show_detail: bool = True, min_bytes: int = 1024, min_pages: int = 1, require_eof: bool = True, headers: Optional[dict[str, str]] = None, cookies: Optional[dict[str, str]] = None, proxy: Optional[str] = None) -> Path:
+        if (target_path := Path(target_path)).exists() and not overwrite:
+            if self.validatepdffile(target_path, min_bytes=min_bytes, min_pages=min_pages, require_eof=require_eof).valid: return target_path
+            target_path.unlink(missing_ok=True)
+        path = await self.downloadfile(url, target_path, overwrite=overwrite, progress_description=progress_description, show_detail=show_detail, headers=headers, cookies=cookies, proxy=proxy)
+        result = self.validatepdffile(path, min_bytes=min_bytes, min_pages=min_pages, require_eof=require_eof)
+        if not result.valid: Path(path).unlink(missing_ok=True); raise PaperDownloadError(f"Invalid PDF downloaded from {url}: {result.reason}")
+        return path
     '''download'''
     async def download(self, paper_infos: Sequence["PaperInfo"], output_dir: str | Path = "paperdl_outputs", *, overwrite: bool = False, return_exceptions: bool = False) -> list[Path]:
         if not (paper_infos := list(paper_infos)): return []
