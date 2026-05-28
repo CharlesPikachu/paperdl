@@ -1,6 +1,10 @@
 '''
 Function:
     Test search and download for PMLRPaperClient
+Author:
+    Zhenchao Jin
+WeChat Official Account (微信公众号):
+    Charles的皮卡丘
 '''
 import asyncio
 from pathlib import Path

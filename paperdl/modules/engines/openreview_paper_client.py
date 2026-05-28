@@ -79,11 +79,8 @@ class OpenReviewPaperClient(BasePaperClient):
             pdf_bytes = await self.runblocking(self._or_client.get_attachment, field_name="pdf", id=note_id)
             tmp_target_path = target_path.with_suffix(target_path.suffix + ".part")
             async with aiofiles.open(tmp_target_path, "wb") as fp: await fp.write(pdf_bytes)
-            tmp_target_path.replace(target_path)
-            validation = self.validatepdffile(target_path, min_bytes=4 * 1024, min_pages=1)
-            if not validation.valid:
-                target_path.unlink(missing_ok=True)
-                raise PaperDownloadError(f"Invalid OpenReview attachment PDF: {validation.reason}")
+            tmp_target_path.replace(target_path); validation = self.validatepdffile(target_path, min_bytes=4 * 1024, min_pages=1)
+            if not validation.valid: target_path.unlink(missing_ok=True); raise PaperDownloadError(f"Invalid OpenReview attachment PDF: {validation.reason}")
             return target_path
         finally:
             self.removetask(task_id)
