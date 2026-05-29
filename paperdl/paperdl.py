@@ -386,15 +386,15 @@ class PaperClientCMD:
         if output_format == 'json': print(json.dumps([p.todict(drop_none=True) for p in papers], ensure_ascii=False, indent=2)); return
         if output_format == 'jsonl': print('\n'.join(p.tojson(ensure_ascii=False, indent=None) for p in papers)); return
         if not (self.console and Table): self.print('\n'.join(f'[{idx}] {paper.source} | {paper.year or ""} | {paper.title} | {paper.main_url or ""}' for idx, paper in enumerate(shown, start=1))) if shown else None; return
-        table = Table(title=f'Search Results ({len(papers)} total)', box=box.ROUNDED if box else None, header_style='bold cyan', show_lines=False, expand=True)
-        table.add_column('#', justify='right', no_wrap=True, style='dim', width=4)
-        table.add_column('Engine', no_wrap=True, style='bold', overflow='ellipsis', max_width=20)
-        table.add_column('Year', justify='right', no_wrap=True, width=6)
-        table.add_column('Title', ratio=4, overflow='ellipsis', no_wrap=True)
-        table.add_column('Authors', ratio=2, overflow='ellipsis', no_wrap=True)
-        table.add_column('Venue', ratio=2, overflow='ellipsis', no_wrap=True)
-        table.add_column('Links', justify='center', no_wrap=True, width=10)
-        for idx, paper in enumerate(shown, start=1): table.add_row(str(idx), paper.source or '', str(paper.year or ''), self.cleantext(paper.title or ''), self.cleantext(paper.short_authors or ''), self.cleantext(paper.venue or ''), self.paperlinkslabel(paper))
+        table = Table(title=f'Search Results ({len(papers)} total)', box=box.SIMPLE_HEAD if box else None, header_style='bold cyan', show_lines=False, expand=False, padding=(0, 1))
+        table.add_column('#', justify='right', no_wrap=True, style='dim', width=3)
+        table.add_column('Engine', no_wrap=True, style='bold', overflow='ellipsis', max_width=12)
+        table.add_column('Year', justify='right', no_wrap=True, width=4)
+        table.add_column('Title', style='bold', overflow='fold', max_width=80)
+        table.add_column('Authors', overflow='fold', max_width=34)
+        table.add_column('Venue', overflow='ellipsis', max_width=22)
+        table.add_column('Links', justify='center', no_wrap=True, width=7)
+        for idx, paper in enumerate(shown, start=1): table.add_row(str(idx), re.sub(r'PaperClient$', '', paper.source or '') or '-', str(paper.year or ''), self.cleantext(paper.title or ''), self.cleantext(paper.short_authors or ''), self.cleantext(paper.venue or ''), self.paperlinkslabel(paper))
         self.console.print(table)
         if limit and len(papers) > limit: self.console.print(f'[dim]Showing first {limit} of {len(papers)} results.[/dim]')
     '''renderpreview'''
