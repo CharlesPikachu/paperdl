@@ -1,47 +1,116 @@
-# Install Paperdl
+# Paperdl Installation
 
+#### Environment Requirements
 
-#### Environment
+- Operating system: Linux, macOS, or Windows.
+- Python version: Python 3.10 or later. The current package metadata declares `requires-python = ">=3.10"`.
+- Package manager: `pip` is required. We recommend using the latest `pip`, `setuptools`, and `wheel` before installation.
+- Network access: most Paperdl engines search or download papers from remote academic websites, so a stable network connection is required.
+- Optional browser runtime: Playwright + Chromium is only needed for browser fallback downloads, mainly for bioRxiv / medRxiv PDF pages that block normal HTTP clients.
 
-- OS: Linux or macOS or Windows
-- Python version: Python3.6+
+#### Recommended Environment Setup
 
+Although Paperdl can be installed directly into your global Python environment, we recommend installing it in a virtual environment to avoid dependency conflicts with other projects.
 
-#### Pip install
+For Linux / macOS:
 
-You can run the following command in the terminal to install paperdl (make sure that the python is in the environment variable):
-
-```sh
-pip install paperdl --upgrade
+```bash
+python3.10 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip setuptools wheel
 ```
 
+For Windows PowerShell:
 
-#### Source code install
-
-**1.Online**
-
-You can run the following command in the terminal to install paperdl (make sure that the python and git are in the environment variable):
-
-```sh
-pip install git+https://github.com/CharlesPikachu/paperdl.git@master
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip setuptools wheel
 ```
 
-**2.Offline**
+If PowerShell refuses to activate the virtual environment because script execution is disabled, run the following command once and then activate the environment again:
 
-You can first run the following command in the terminal to download the source code in your computer:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-```sh
+#### Installation Instructions
+
+You have several installation methods to choose from.
+
+```bash
+# from PyPI
+python -m pip install -U paperdl
+
+# from GitHub repository
+python -m pip install -U git+https://github.com/CharlesPikachu/paperdl.git@main
+
+# from local source code
 git clone https://github.com/CharlesPikachu/paperdl.git
-```
-
-Then, enter the corresponding directory:
-
-```sh
 cd paperdl
+python -m pip install -U .
+
+# editable install for development
+python -m pip install -e .
 ```
 
-Finally, run the following command in the terminal to install paperdl:
+For modern Python projects based on `pyproject.toml`, `python -m pip install .` is preferred over `python setup.py install`. The latter is deprecated and this repository may not include a `setup.py` file.
 
-```sh
-python setup.py install
+#### Optional Browser Installation
+
+Most Paperdl engines work with the normal installation above. However, some bioRxiv / medRxiv PDF downloads may be blocked for normal HTTP clients. Paperdl includes an optional Playwright-based browser fallback for these cases.
+
+To enable this feature when installing from PyPI:
+
+```bash
+python -m pip install -U "paperdl[browser]"
+python -m playwright install chromium
+```
+
+To enable it from local source code:
+
+```bash
+python -m pip install -e ".[browser]"
+python -m playwright install chromium
+```
+
+On some Linux servers, Playwright may also need system-level browser dependencies:
+
+```bash
+python -m playwright install-deps chromium
+```
+
+You can skip this optional browser installation if you only use engines such as arXiv, ACL Anthology, OpenReview, PMLR, or PMC OA, or if normal bioRxiv / medRxiv HTTP downloads work in your environment.
+
+#### Verify the Installation
+
+After installation, verify that the Python package can be imported:
+
+```bash
+python -c "import paperdl; print(paperdl.__version__)"
+```
+
+Then verify that the command line interface is available:
+
+```bash
+paperdl --help
+paperdl clients
+```
+
+A minimal search test:
+
+```bash
+paperdl search "large language model" -c arxiv -n 3
+```
+
+A minimal download test:
+
+```bash
+paperdl download "large language model" -c arxiv -n 3 --select top1 -o papers
+```
+
+If `paperdl` is not recognized as a command, try running it from the same Python environment that installed the package, or reinstall Paperdl with:
+
+```bash
+python -m pip install -U paperdl
 ```
