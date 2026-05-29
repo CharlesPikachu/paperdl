@@ -3,7 +3,7 @@
 #### Environment Requirements
 
 - Operating system: Linux, macOS, or Windows.
-- Python version: Python 3.10 or later. The current package metadata declares `requires-python = ">=3.10"`.
+- Python version: Python 3.10 or later.
 - Package manager: `pip` is required. We recommend using the latest `pip`, `setuptools`, and `wheel` before installation.
 - Network access: most Paperdl engines search or download papers from remote academic websites, so a stable network connection is required.
 - Optional browser runtime: Playwright + Chromium is only needed for browser fallback downloads, mainly for bioRxiv / medRxiv PDF pages that block normal HTTP clients.
@@ -81,36 +81,3 @@ python -m playwright install-deps chromium
 ```
 
 You can skip this optional browser installation if you only use engines such as arXiv, ACL Anthology, OpenReview, PMLR, or PMC OA, or if normal bioRxiv / medRxiv HTTP downloads work in your environment.
-
-#### Verify the Installation
-
-After installation, verify that the Python package can be imported:
-
-```bash
-python -c "import paperdl; print(paperdl.__version__)"
-```
-
-Then verify that the command line interface is available:
-
-```bash
-paperdl --help
-paperdl clients
-```
-
-A minimal search test:
-
-```bash
-paperdl search "large language model" -c arxiv -n 3
-```
-
-A minimal download test:
-
-```bash
-paperdl download "large language model" -c arxiv -n 3 --select top1 -o papers
-```
-
-If `paperdl` is not recognized as a command, try running it from the same Python environment that installed the package, or reinstall Paperdl with:
-
-```bash
-python -m pip install -U paperdl
-```
