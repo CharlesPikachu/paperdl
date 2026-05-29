@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paperdl"
+dynamic = ["version"]
+description = "PaperDL: A Unified Asynchronous Framework for Scholarly Paper Search and Download"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.10"
+license = { text = "Apache License 2.0" }
+authors = [
+  { name = "Zhenchao Jin", email = "charlesblwx@gmail.com" },
+]
+keywords = ["paper", "scholarly", "arxiv", "openreview", "pmlr", "pdf", "downloader"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "aiohttp>=3.9,<4.0",
+  "aiofiles>=23.2,<26.0",
+  "feedparser>=6.0.11,<7.0",
+  "beautifulsoup4>=4.13,<5.0",
+  "lxml>=5.0,<7.0",
+  "ftfy>=6.2,<7.0",
+  "pathvalidate>=3.2,<4.0",
+  "python-dateutil>=2.9,<3.0",
+  "rich>=14.0,<16.0",
+  "pypdf>=4.0,<7.0",
+  "openreview-py>=2.0.0,<4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "types-python-dateutil>=2.9,<3.0",
+  "types-aiofiles>=25.1,<26.0",
+  "build>=1.2",
+  "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/CharlesPikachu/paperdl"
+Repository = "https://github.com/CharlesPikachu/paperdl"
+Documentation = "https://paperdl.readthedocs.io"
+Issues = "https://github.com/CharlesPikachu/paperdl/issues"
+
+[project.scripts]
+paperdl = "paperdl.paperdl:main"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = { attr = "paperdl.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["paperdl*"]
+exclude = ["docs*", "scripts*", "tests*", "examples*"]
