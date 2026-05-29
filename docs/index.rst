@@ -12,6 +12,7 @@ Paperdl documentation
 	Disclaimer.md
 	Install.md
 	Quickstart.md
+	Clients.md
 	Changelog.md
 	Recommend.md
 	Author.md

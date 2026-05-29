@@ -7,6 +7,7 @@ WeChat Official Account (微信公众号):
     Charles的皮卡丘
 '''
 import re
+import json
 import asyncio
 import feedparser
 from pathlib import Path
@@ -72,6 +73,9 @@ class ArxivPaperClient(BasePaperClient):
         return await self.downloadvalidatedpdf(url, path, overwrite=overwrite, progress_description=f"Downloading: {short_title}", show_detail=show_detail, min_bytes=4 * 1024, min_pages=1)
     '''buildquery'''
     def buildquery(self, *, query: str, categories: Optional[Sequence[str]] = None, search_field: str = "all") -> str:
+        if isinstance(categories, str):
+            try: categories = json.loads(categories)
+            except json.JSONDecodeError: categories = [x.strip() for x in categories.split(",") if x.strip()]
         categories, query, parts = [c.strip() for c in (categories or []) if c and c.strip()], (query or "").strip(), []
         if query: parts.append(f'{search_field}:"{query}"')
         if categories: cat_query = " OR ".join(f"cat:{c}" for c in categories); parts.append(f"({cat_query})")
