@@ -39,107 +39,89 @@
 </p>
 
 
-# Introduction
+# 🎉 What's New
+
+- 2026-05-30: 
+
+
+# 🧠 Introduction
 
 A simple and extensible toolkit for searching, organizing, and downloading academic papers from specific websites.
 
 If this project helps your research workflow, please consider giving it a star ⭐. Your support helps more people discover the project and motivates future improvements.
 
 
-# Support List
+# 🛡️ Project Disclaimer
 
-|  Source                                          |   Support Search?  |  Support Download?   |
-|  :----:                                          |   :----:           |  :----:              |
-|  [scihub](https://sci-hub.st/)                   |   ✗                |  ✓                   |
-|  [baiduwenku](https://wenku.baidu.com/)          |   ✗                |  ✓                   |
-|  [arxiv](https://arxiv.org/)                     |   ✓                |  ✓                   |
-|  [googlescholar](https://scholar.google.com/)    |   ✓                |  ✓                   |
+This repository is intended for lawful, educational, academic, and research-related purposes only, such as learning Python, exploring academic paper search workflows, and assisting non-profit research or study.
 
+Users are solely responsible for ensuring that their use of this project complies with applicable laws, website terms of service, copyright rules, publisher policies, institutional requirements, and third-party rights. This project must not be used for illegal purposes, copyright infringement, unauthorized access, abusive downloading, or any activity that may harm authors, publishers, platforms, or institutions.
 
-# Install
-
-#### Pip install
-
-```
-run "pip install paperdl"
-```
-
-#### Source code install
-
-```sh
-(1) Offline
-Step1: git clone https://github.com/CharlesPikachu/paperdl.git
-Step2: cd paperdl -> run "python setup.py install"
-(2) Online
-run "pip install git+https://github.com/CharlesPikachu/paperdl.git@master"
-```
+This project is released under the Apache License 2.0. The authors and contributors provide no warranty, commercial authorization, indemnity, or liability commitment beyond the license terms, and are not responsible for any misuse or consequences arising from the use, modification, redistribution, or commercial application of this project.
 
 
-# Quick Start
+# 📚 Supported Paper Clients
 
-#### Calling API
+| Client                                                       | Description                                                                                                                                                           | 🔎 Search | ⬇️ Download    | Code Snippet                                                                                                                               |
+| ----------------------------------------------------         | ------------------------------------------------------------------------------------------------------------------------------------------                            | --------: | ----------:   | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| [ArxivPaperClient](https://arxiv.org/)                       | arXiv preprint search and PDF download.<br>arXiv 预印本论文搜索与 PDF 下载。                                                                                          |    ✅     |     ✅        | [arxiv_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/arxiv_paper_client.py)                 |
+| [OpenReviewPaperClient](https://openreview.net/)             | OpenReview paper search and PDF download, especially for conference submissions and reviews.<br>OpenReview 论文搜索与 PDF 下载，适合会议投稿与评审数据。              |    ✅     |     ✅        | [openreview_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/openreview_paper_client.py)       |
+| [ACLAnthologyPaperClient](https://aclanthology.org/)         | ACL Anthology paper search and PDF download for NLP and computational linguistics papers.<br>ACL Anthology 论文搜索与 PDF 下载，主要面向 NLP 和计算语言学论文。       |    ✅     |     ✅        | [acl_anthology_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/acl_anthology_paper_client.py) |
+| [BioRxivPaperClient](https://www.biorxiv.org/)               | bioRxiv preprint search and PDF download for biology-related papers.<br>bioRxiv 生物学预印本论文搜索与 PDF 下载。                                                     |    ✅     |     ✅        | [biorxiv_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/biorxiv_paper_client.py)             |
+| [MedRxivPaperClient](https://www.medrxiv.org/)               | medRxiv preprint search and PDF download for medical and health science papers.<br>medRxiv 医学与健康科学预印本论文搜索与 PDF 下载。                                  |    ✅     |     ✅        | [biorxiv_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/biorxiv_paper_client.py)             |
+| [PMLRPaperClient](https://proceedings.mlr.press/)            | PMLR paper search and PDF download for machine learning proceedings.<br>PMLR 机器学习会议论文集搜索与 PDF 下载。                                                      |    ✅     |     ✅        | [pmlr_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/pmlr_paper_client.py)                   |
+| [PMCOAPaperClient](https://pmc.ncbi.nlm.nih.gov/)            | PubMed Central Open Access paper search and PDF download.<br>PubMed Central 开放获取论文搜索与 PDF 下载。                                                             |    ✅     |     ✅        | [pmc_oa_paper_client.py](https://github.com/CharlesPikachu/paperdl/blob/main/paperdl/modules/engines/pmc_oa_paper_client.py)               |
 
-If you want to search and download papers from arxiv and google scholar, you can write codes as follow:
 
-```python
-from paperdl import paperdl
+# ⚙️ Installation
 
-config = {'logfilepath': 'paperdl.log', 'savedir': 'papers', 'search_size_per_source': 5, 'proxies': {}}
-target_srcs = ['arxiv', 'googlescholar']
-client = paperdl.Paperdl(config=config)
-client.run(target_srcs)
+Paperdl requires Python 3.10+. Using a virtual environment is recommended to avoid dependency conflicts.
+
+Install from PyPI:
+
+```bash
+python -m pip install -U paperdl
 ```
 
-In addition, if you can not visit google, you can set config as follow:
+Or install the latest version from GitHub:
 
-```python
-config = {'logfilepath': 'paperdl.log', 'savedir': 'papers', 'search_size_per_source': 5, 'proxies': {}, 'area': 'CN'}
+```bash
+python -m pip install -U git+https://github.com/CharlesPikachu/paperdl.git@main
 ```
 
-You can also only download papers by using sci-hub as follow:
+For local development:
 
-```python
-
-from paperdl import paperdl
-
-config = {'logfilepath': 'paperdl.log', 'savedir': 'papers', 'search_size_per_source': 5, 'proxies': {}}
-client = paperdl.SciHub(config=config, logger_handle=paperdl.Logger('paper.log'))
-paperinfo = {
-    'savename': '9193963',
-    'ext': 'pdf',
-    'savedir': 'outputs',
-    'input': 'https://ieeexplore.ieee.org/document/9193963/',
-    'source': 'scihub',
-}
-client.download([paperinfo])
+```bash
+git clone https://github.com/CharlesPikachu/paperdl.git
+cd paperdl
+python -m pip install -e .
 ```
 
-#### Calling EXE
+Most paper clients work without browser dependencies. However, some bioRxiv / medRxiv PDF downloads may require the optional Playwright-based browser fallback.
 
-```sh
-Usage: paperdl [OPTIONS]
+Install with browser support:
 
-Options:
-  --version               Show the version and exit.
-  -m, --mode TEXT         the used mode, support "search" and "download"
-  -i, --inp TEXT          the paper to download, the supported format is the
-                          same as sci-hub
-  -s, --source TEXT       the used source, support "arxiv", "scihub" and
-                          "googlescholar", you can use "," to split multi
-                          sources
-  -d, --savedir TEXT      the directory for saving papers
-  -l, --logfilepath TEXT  the logging filepath
-  -z, --size INTEGER      search size per source
-  -p, --proxies TEXT      the proxies to be adopted
-  -a, --area TEXT         your area, support "CN" and "EN"
-  -c, --cookie TEXT       the cookie copied from the target website, only used
-                          in "baiduwenku"
-  --help                  Show this message and exit.
+```bash
+python -m pip install -U "paperdl[browser]"
+python -m playwright install chromium
 ```
 
-# Screenshot
+For local development with browser support:
 
-![img](./docs/screenshot.gif)
+```bash
+python -m pip install -e ".[browser]"
+python -m playwright install chromium
+```
+
+On some Linux servers, Playwright may also require system dependencies:
+
+```bash
+python -m playwright install-deps chromium
+```
+
+
+# 🚀 Quick Start
+
 
 
 # ⭐ Recommended Projects
@@ -162,7 +144,7 @@ If you use this project in your research, please cite the repository.
 ```
 @misc{musicdl2020,
     author = {Zhenchao Jin},
-    title = {Paperdl: Search and download paper from specific websites},
+    title = {Paperdl: A Unified Asynchronous Framework for Scholarly Paper Search and Download},
     year = {2022},
     publisher = {GitHub},
     journal = {GitHub repository},
