@@ -9,9 +9,9 @@ Paperdl documentation
 .. toctree::
 	:maxdepth: 2
 	
-	State.md
+	Disclaimer.md
 	Install.md
 	Quickstart.md
 	Changelog.md
 	Recommend.md
-	Aboutme.md
+	Author.md

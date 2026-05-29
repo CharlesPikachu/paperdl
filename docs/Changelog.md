@@ -1,21 +1,19 @@
 # Changelog
 
-**2022-02-23**
+## v0.1.6 - 2022-05-13
 
-- Version: v0.1.3,
-- Update: support arxiv, googlescholar and scihub.
+- Fixed downloader-related bugs.
 
-**2022-02-25**
+## v0.1.5 - 2022-05-08
 
-- Version: v0.1.4,
-- Update: some improvements, like adding exe auto building and the progress bar.
+- Added support for Baidu Wenku.
 
-**2022-05-08**
+## v0.1.4 - 2022-02-25
 
-- Version: v0.1.5,
-- Update: support baiduwenku.
+- Added automatic `.exe` build support.
+- Added progress bar support.
+- Improved overall stability.
 
-**2022-05-13**
+## v0.1.3 - 2022-02-23
 
-- Version: v0.1.6,
-- Update: fix the bugs in downloader.
+- Added support for arXiv, Google Scholar, and Sci-Hub.

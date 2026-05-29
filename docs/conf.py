@@ -18,9 +18,9 @@
 # -- Project information -----------------------------------------------------
 
 project = 'paperdl'
-copyright = '2022, Charles'
-author = 'Charles'
-release = '0.1.0'
+copyright = '2022-2026, Zhenchao Jin'
+author = 'Zhenchao Jin'
+release = '0.2.0'
 
 # -- General configuration ---------------------------------------------------
 
