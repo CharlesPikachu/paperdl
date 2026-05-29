@@ -89,18 +89,6 @@ paperdl search "diffusion" -c arxiv,pmlr \
 
 (3) Download Papers
 
-
-
-
-
-
-
-
-
-
-
-
-
 Search and download all returned papers:
 
 ```bash
@@ -143,36 +131,29 @@ Stop immediately when any selected client fails:
 paperdl download "diffusion" -c arxiv,pmlr -n 5 --raise-on-error
 ```
 
-### 2.4 Common CLI options
+(4) Common CLI Options
 
-| Option | Purpose |
-| --- | --- |
-| `-c, --clients` | Comma-separated client names, or `all`. Default: `arxiv`. |
-| `-n, --total-results` | Default number of results per client. |
-| `--output-json` | Save `search` results to a JSON file. |
-| `--input-json` | Load paper records from JSON when running `download`. |
-| `--format` | Output format: `table`, `json`, or `jsonl`. |
-| `--select` | Download selection, such as `all`, `top10`, or `1,3-5`. |
-| `-o, --output-dir` | Output directory for PDFs. |
-| `--overwrite` | Overwrite existing PDF files. |
-| `--no-dedupe` | Disable cross-client deduplication. |
-| `--quiet` | Disable verbose logs and progress output where possible. |
-| `--search-concurrency` | Number of clients searched concurrently. |
-| `--init-param` / `--search-param` | Constructor or search parameter applied to all clients. |
-| `--client-init-param` / `--client-search-param` | Constructor or search parameter applied to one client. |
-| `--init-kwargs` / `--search-kwargs` | JSON object applied to all clients. |
-| `--client-init-kwargs` / `--client-search-kwargs` | JSON object keyed by client name. |
-
-
-
-
-
-
-
+| Option                                               | Purpose                                                                                                  |
+| ---                                                  | ---                                                                                                      |
+| `-c, --clients`                                      | Comma-separated client names, or `all`. Default: `arxiv`.                                                |
+| `-n, --total-results`                                | Default number of results per client.                                                                    |
+| `--output-json`                                      | Save `search` results to a JSON file.                                                                    |
+| `--input-json`                                       | Load paper records from JSON when running `download`.                                                    |
+| `--format`                                           | Output format: `table`, `json`, or `jsonl`.                                                              |
+| `--select`                                           | Download selection, such as `all`, `top10`, or `1,3-5`.                                                  |
+| `-o, --output-dir`                                   | Output directory for PDFs.                                                                               |
+| `--overwrite`                                        | Overwrite existing PDF files.                                                                            |
+| `--no-dedupe`                                        | Disable cross-client deduplication.                                                                      |
+| `--quiet`                                            | Disable verbose logs and progress output where possible.                                                 |
+| `--search-concurrency`                               | Number of clients searched concurrently.                                                                 |
+| `--init-param` / `--search-param`                    | Constructor or search parameter applied to all clients.                                                  |
+| `--client-init-param` / `--client-search-param`      | Constructor or search parameter applied to one client.                                                   |
+| `--init-kwargs` / `--search-kwargs`                  | JSON object applied to all clients.                                                                      |
+| `--client-init-kwargs` / `--client-search-kwargs`    | JSON object keyed by client name.                                                                        |
 
 #### Python Package Usage
 
-### 3.1 Minimal search example
+(1) Minimal Search Example
 
 ```python
 import asyncio
@@ -189,7 +170,7 @@ asyncio.run(main())
 
 `client.search(...)` returns a list of `PaperInfo` objects. Common fields include `title`, `abstract`, `authors`, `article_url`, `download_url`, `doi`, `arxiv_id`, `venue`, `published_at`, and `source`.
 
-### 3.2 Search multiple sources
+(2) Search Multiple Sources
 
 ```python
 import asyncio
@@ -215,7 +196,7 @@ print(results["arxiv"])
 print(results["pmlr"])
 ```
 
-### 3.3 Search and download
+(3) Search and Download
 
 ```python
 import asyncio
@@ -241,7 +222,7 @@ papers, paths = await client.searchanddownload(
 )
 ```
 
-### 3.4 Save and load search results
+(4) Save and Load Search Results
 
 ```python
 from paperdl import PaperClient
@@ -258,7 +239,7 @@ async with PaperClient(["arxiv", "pmlr", "acl_anthology"]) as client:
     paths = await client.download(loaded_papers, output_dir="papers")
 ```
 
-### 3.5 Configure different clients differently
+(5) Configure Different Clients Differently
 
 ```python
 import asyncio
@@ -293,7 +274,7 @@ papers = await client.search(
 )
 ```
 
-### 3.6 Error handling
+(6) Error Handling
 
 By default, a failed client does not stop other clients. Search errors are stored in `client.last_errors`.
 
@@ -321,7 +302,7 @@ results = await client.download(
 )
 ```
 
-### 3.7 Use PaperClientCMD from Python
+(7) Use PaperClientCMD from Python
 
 `PaperClientCMD` is the Python wrapper behind the command line interface. It is useful when you want to reuse CLI behavior inside another script:
 
