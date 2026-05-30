@@ -69,7 +69,7 @@ paperdl search "multimodal large language model" -c arxiv -n 50 --limit 10 --out
 Pass common search parameters to every selected client:
 
 ```bash
-paperdl search "large language model" -c arxiv --search-param sort_by="relevance" --search-param page_size=20
+paperdl search "large language model" -c arxiv -n 20 --search-param sort_by=relevance --search-param page_size=20
 ```
 
 Pass per-client search parameters:

@@ -1,4 +1,4 @@
-# PaperDL Clients
+# Paperdl Clients
 
 This document summarizes the built-in PaperDL clients, their search/download parameters, and practical examples.
 For a short usage-oriented introduction, read `QuickStart.md` first.
