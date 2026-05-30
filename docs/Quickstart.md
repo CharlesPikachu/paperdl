@@ -72,7 +72,7 @@ Pass common search parameters to every selected client:
 paperdl search "large language model" -c arxiv -n 20 --search-param sort_by=relevance --search-param page_size=20
 ```
 
-Pass per-client search parameters:
+Pass per-client search parameters. For macOS/Linux/Git Bash:
 
 ```bash
 paperdl search "diffusion" -c arxiv,pmlr -n 3 \
@@ -80,12 +80,29 @@ paperdl search "diffusion" -c arxiv,pmlr -n 3 \
   --client-search-param pmlr.max_volumes=30
 ```
 
-You can also pass per-client parameters as JSON:
+For Windows cmd:
+
+```cmd
+paperdl search "diffusion" -c arxiv,pmlr -n 3 ^
+  --client-search-param "arxiv.categories=[\"cs.CV\",\"cs.LG\"]" ^
+  --client-search-param pmlr.max_volumes=30
+```
+
+You can also pass per-client parameters as JSON. For macOS/Linux/Git Bash:
 
 ```bash
-paperdl search "diffusion" -c arxiv,pmlr \
-  --client-search-kwargs '{"arxiv":{"categories":["cs.CV"]},"pmlr":{"max_volumes":30}}'
+paperdl search "diffusion" -c arxiv,pmlr -n 3 \
+  --client-search-kwargs '{"arxiv":{"categories":["cs.CV","cs.LG"]},"pmlr":{"max_volumes":30}}'
 ```
+
+For Windows cmd:
+
+```cmd
+paperdl search "diffusion" -c arxiv,pmlr -n 3 ^
+  --client-search-kwargs "{\"arxiv\":{\"categories\":[\"cs.CV\",\"cs.LG\"]},\"pmlr\":{\"max_volumes\":30}}"
+```
+
+On Windows cmd, do not use single quotes around JSON-like values. Use double quotes around the whole argument and escape inner double quotes with `\"`.
 
 (3) Download Papers
 
