@@ -41,7 +41,7 @@
 
 # 🎉 What's New
 
-- 2026-05-30: 
+- 2026-05-31: Paperdl has received a major upgrade: all code has been rewritten to be asynchronous, with support for paper search and download across seven major platforms, including arXiv, OpenReview, ACL Anthology, bioRxiv, medRxiv, PMLR, and PMC OA. The documentation has also been comprehensively optimized.
 
 
 # 🧠 Introduction
