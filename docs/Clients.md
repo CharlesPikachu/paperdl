@@ -1,6 +1,6 @@
 # Paperdl Clients
 
-This document summarizes the built-in PaperDL clients, their search/download parameters, and practical examples.
+This document summarizes the built-in Paperdl clients, their search/download arguments, and practical examples.
 For a short usage-oriented introduction, read `QuickStart.md` first.
 
 ## 1. Common Model
@@ -31,22 +31,22 @@ paths = await client.download(
 )
 ```
 
-Common constructor parameters:
+Common constructor arguments:
 
-| Parameter | Description |
-| --- | --- |
-| `timeout` | Total HTTP request timeout. |
-| `concurrency` | Internal per-client concurrency for requests and downloads. |
-| `max_retries` | Number of retries after request or download failures. |
-| `retry_backoff` | Base wait time for exponential backoff. |
-| `headers` | Custom HTTP headers. |
-| `cookies` / `cookie_file` | Cookies passed directly, or a cookie file to load and save. |
-| `proxy` | Proxy URL, for example `http://127.0.0.1:7890`. |
-| `thread_workers` | Thread pool size for blocking tasks. |
-| `show_progress` | Whether to show rich progress bars. |
-| `progress_mode` | Progress mode: `auto`, `summary`, `detailed`, or `none`. |
-| `max_detail_tasks` | Maximum number of detailed tasks shown in `auto` mode. |
-| `verbose` | Whether to print logs. |
+| Parameter                                             | Description                                                                                                     |
+| ---                                                   | ---                                                                                                             |
+| `timeout`                                             | Total HTTP request timeout.                                                                                     |
+| `concurrency`                                         | Internal per-client concurrency for requests and downloads.                                                     |
+| `max_retries`                                         | Number of retries after request or download failures.                                                           |
+| `retry_backoff`                                       | Base wait time for exponential backoff.                                                                         |
+| `headers`                                             | Custom HTTP headers.                                                                                            |
+| `cookies` / `cookie_file`                             | Cookies passed directly, or a cookie file to load and save.                                                     |
+| `proxy`                                               | Proxy URL, for example `http://127.0.0.1:7890`.                                                                 |
+| `thread_workers`                                      | Thread pool size for blocking tasks.                                                                            |
+| `show_progress`                                       | Whether to show rich progress bars.                                                                             |
+| `progress_mode`                                       | Progress mode: `auto`, `summary`, `detailed`, or `none`.                                                        |
+| `max_detail_tasks`                                    | Maximum number of detailed tasks shown in `auto` mode.                                                          |
+| `verbose`                                             | Whether to print logs.                                                                                          |
 
 `download(...)` calls the client-specific `downloaditem(...)` internally, so direct calls to `downloaditem` are rarely needed.
 
@@ -60,7 +60,7 @@ Import:
 from paperdl.modules import ArxivPaperClient
 ```
 
-### Search parameters
+#### Search arguments
 
 ```python
 await client.search(
@@ -76,19 +76,19 @@ await client.search(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `query` | Search keywords. |
-| `total_results` | Maximum number of returned papers. |
-| `page_size` | Number of results requested per API page. |
-| `categories` | arXiv categories, for example `['cs.CL', 'cs.CV']`. |
-| `search_field` | arXiv search field. Default: `all`. |
-| `sort_by` | `relevance`, `lastUpdatedDate`, or `submittedDate`. |
-| `sort_order` | `ascending` or `descending`. |
-| `raw_query` | If `True`, use the raw arXiv query string without automatic field/category composition. |
-| `deduplicate` | Deduplicate by `PaperInfo.identity_key`. |
+| Parameter                                                        | Description                                                                               |
+| ---                                                              | ---                                                                                       |
+| `query`                                                          | Search keywords.                                                                          |
+| `total_results`                                                  | Maximum number of returned papers.                                                        |
+| `page_size`                                                      | Number of results requested per API page.                                                 |
+| `categories`                                                     | arXiv categories, for example `['cs.CL', 'cs.CV']`.                                       |
+| `search_field`                                                   | arXiv search field. Default: `all`.                                                       |
+| `sort_by`                                                        | `relevance`, `lastUpdatedDate`, or `submittedDate`.                                       |
+| `sort_order`                                                     | `ascending` or `descending`.                                                              |
+| `raw_query`                                                      | If `True`, use the raw arXiv query string without automatic field/category composition.   |
+| `deduplicate`                                                    | Deduplicate by `PaperInfo.identity_key`.                                                  |
 
-### Examples
+#### Examples
 
 Search recent arXiv papers in selected categories:
 
@@ -137,6 +137,13 @@ async with PaperClient(
 ) as client:
     papers = await client.search("transformer", total_results=10)
 ```
+
+
+
+
+
+
+
 
 ## 3. OpenReviewPaperClient
 
