@@ -8,7 +8,7 @@ WeChat Official Account (微信公众号):
 '''
 import asyncio
 from pathlib import Path
-from modules import ArxivPaperClient
+from paperdl import ArxivPaperClient
 
 
 QUERY = "large language model"
