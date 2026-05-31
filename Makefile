@@ -1,12 +1,18 @@
-.PHONY: install
+.PHONY: install develop build publish clean
 
 install:
-	python setup.py install
+	python -m pip install .
 
 develop:
-	python setup.py develop
+	python -m pip install -e .
 
-publish:
-	pip install 'twine>=1.5.0' --upgrade
-	python setup.py sdist bdist_wheel
+build: clean
+	python -m pip install --upgrade build twine
+	python -m build
+	twine check dist/*
+
+publish: build
 	twine upload dist/*
+
+clean:
+	rm -rf build dist *.egg-info
