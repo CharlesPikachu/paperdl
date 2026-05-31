@@ -48,14 +48,23 @@ class ACLAnthologyPaperClient(BasePaperClient):
         if self.progress_mode != "detailed": self.removetask(task_id)
         self.log(f"Finished ACL Anthology search. Found {len((paper_infos := paper_infos[:int(total_results)]))} papers.")
         return paper_infos
+    '''resolvecollectionid'''
+    @staticmethod
+    def resolvecollectionid(collection_id: str) -> tuple[str, Optional[str]]:
+        match = re.fullmatch(r"(\d{4})\.([A-Za-z0-9]+)-(.+)", (collection_id := (collection_id or "").strip()))
+        if match: year, event, volume_id = match.groups(); return f"{year}.{event}", volume_id
+        return collection_id, None
     '''querycollection'''
     async def querycollection(self, collection_id: str, *, query: Optional[str] = None) -> list["PaperInfo"]:
-        xml_text = await self.requesttext(self.XML_RAW_URL.format(collection_id=collection_id))
+        xml_collection_id, target_volume_id = self.resolvecollectionid(collection_id)
+        xml_text = await self.requesttext(self.XML_RAW_URL.format(collection_id=xml_collection_id))
         root = ET.fromstring(xml_text); paper_infos: list[PaperInfo] = []
         for volume in root.findall(".//volume"):
+            volume_id = volume.attrib.get("id")
+            if target_volume_id and volume_id != target_volume_id: continue
             booktitle = self.nodetext(volume.find("./meta/booktitle"))
             for paper in volume.findall("./paper"):
-                paper_info = self.papertopaperinfo(paper, collection_id=collection_id, volume_id=volume.attrib.get("id"), booktitle=booktitle)
+                paper_info = self.papertopaperinfo(paper, collection_id=xml_collection_id, volume_id=volume_id, booktitle=booktitle)
                 if not query or paper_info.matchkeyword(query): paper_infos.append(paper_info)
         return paper_infos
     '''downloaditem'''
