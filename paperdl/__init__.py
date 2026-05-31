@@ -14,13 +14,11 @@ __email__ = 'charlesblwx@gmail.com'
 __license__ = 'Apache License 2.0'
 '''copyright'''
 __copyright__ = 'Copyright 2022-2026 Zhenchao Jin'
+'''import'''
+from .paperdl import PaperClient, PaperClientCMD, main
+from .modules import ArxivPaperClient, OpenReviewPaperClient, ACLAnthologyPaperClient, BioRxivPaperClient, MedRxivPaperClient, PMLRPaperClient, PMCOAPaperClient
 '''all'''
-__all__ = ['__title__', '__description__', '__url__', '__version__', '__author__', '__email__', '__license__', '__copyright__', 'PaperClient', 'PaperClientCMD', 'main']
-
-
-'''getattr'''
-def __getattr__(name: str):
-    if name in {'PaperClient', 'PaperClientCMD', 'main'}:
-        from .paperdl import PaperClient, PaperClientCMD, main
-        return {'PaperClient': PaperClient, 'PaperClientCMD': PaperClientCMD, 'main': main}[name]
-    raise AttributeError(f'module {__name__!r} has no attribute {name!r}')
+__all__ = [
+    '__title__', '__description__', '__url__', '__version__', '__author__', '__email__', '__license__', '__copyright__', 'PaperClient', 'PaperClientCMD', 'main',
+    'ArxivPaperClient', 'OpenReviewPaperClient', 'ACLAnthologyPaperClient', 'BioRxivPaperClient', 'MedRxivPaperClient', 'PMLRPaperClient', 'PMCOAPaperClient',
+]
