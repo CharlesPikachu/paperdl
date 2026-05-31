@@ -138,13 +138,6 @@ async with PaperClient(
     papers = await client.search("transformer", total_results=10)
 ```
 
-
-
-
-
-
-
-
 ## 3. OpenReviewPaperClient
 
 Registered name: `openreview`
@@ -155,15 +148,15 @@ Import:
 from paperdl.modules import OpenReviewPaperClient
 ```
 
-### Additional constructor parameters
+#### Additional constructor parameters
 
-| Parameter | Description |
-| --- | --- |
-| `baseurl` | OpenReview API URL. Default: `https://api2.openreview.net`. |
-| `username` / `password` | Credentials used when login is required. |
-| `api_version` | Default: `2`, using `openreview.api.OpenReviewClient`. |
+| Parameter                           | Description                                                          |
+| ---                                 | ---                                                                  |
+| `baseurl`                           | OpenReview API URL. Default: `https://api2.openreview.net`.          |
+| `username` / `password`             | Credentials used when login is required.                             |
+| `api_version`                       | Default: `2`, using `openreview.api.OpenReviewClient`.               |
 
-### Search parameters
+#### Search parameters
 
 ```python
 await client.search(
@@ -178,19 +171,19 @@ await client.search(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `query` | Optional keyword query. By default, filtering is performed locally on title, abstract, authors, keywords, and related fields. |
-| `venue_id` | Venue ID, for example `ICLR.cc/2024/Conference`. |
-| `invitation` | OpenReview invitation, for example `ICLR.cc/2024/Conference/-/Submission`. |
-| `content` | OpenReview content filter, for example `{'venueid': 'ICLR.cc/2024/Conference'}`. |
-| `details` | `details` argument passed to OpenReview `get_all_notes`. |
-| `accepted_only` | When used with `venue_id`, return only accepted papers. |
-| `client_side_filter` | Whether to filter locally by `query`. |
+| Parameter                             | Description                                                                                                                      |
+| ---                                   | ---                                                                                                                              |
+| `query`                               | Optional keyword query. By default, filtering is performed locally on title, abstract, authors, keywords, and related fields.    |
+| `venue_id`                            | Venue ID, for example `ICLR.cc/2024/Conference`.                                                                                 |
+| `invitation`                          | OpenReview invitation, for example `ICLR.cc/2024/Conference/-/Submission`.                                                       |
+| `content`                             | OpenReview content filter, for example `{'venueid': 'ICLR.cc/2024/Conference'}`.                                                 |
+| `details`                             | `details` argument passed to OpenReview `get_all_notes`.                                                                         |
+| `accepted_only`                       | When used with `venue_id`, return only accepted papers.                                                                          |
+| `client_side_filter`                  | Whether to filter locally by `query`.                                                                                            |
 
 At least one of `venue_id`, `invitation`, or `content` must be provided.
 
-### Examples
+#### Examples
 
 Search a conference:
 
@@ -243,7 +236,7 @@ Import:
 from paperdl.modules import ACLAnthologyPaperClient
 ```
 
-### Search parameters
+#### Search parameters
 
 ```python
 await client.search(
@@ -255,14 +248,14 @@ await client.search(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `query` | Optional keyword query. If empty, papers in the scanned collections are returned. |
-| `collection_ids` | ACL Anthology XML collection IDs, for example `['2024.acl-long']`. |
-| `max_collections` | When `collection_ids` is not provided, scan this many recent collections. |
-| `deduplicate` | Deduplicate results. |
+| Parameter                                               | Description                                                                               |
+| ---                                                     | ---                                                                                       |
+| `query`                                                 | Optional keyword query. If empty, papers in the scanned collections are returned.         |
+| `collection_ids`                                        | ACL Anthology XML collection IDs, for example `['2024.acl-long']`.                        |
+| `max_collections`                                       | When `collection_ids` is not provided, scan this many recent collections.                 |
+| `deduplicate`                                           | Deduplicate results.                                                                      |
 
-### Examples
+#### Examples
 
 Search recent collections:
 
@@ -303,17 +296,17 @@ from paperdl.modules import BioRxivPaperClient, MedRxivPaperClient
 
 `MedRxivPaperClient` inherits from `BioRxivPaperClient`. The main difference is that the source server is `medrxiv` instead of `biorxiv`.
 
-### Additional constructor parameters
+#### Additional constructor parameters
 
-| Parameter | Description |
-| --- | --- |
-| `browser_fallback` | Whether to use a Playwright browser fallback when normal download fails. |
-| `browser_headless` | Whether the fallback browser runs in headless mode. |
-| `browser_channel` | Chromium channel, for example `chrome`. |
-| `browser_user_data_dir` | Browser user data directory. |
-| `browser_wait_seconds` | Wait time before retrying when a challenge page is detected. |
+| Parameter                                                  | Description                                                                  |
+| ---                                                        | ---                                                                          |
+| `browser_fallback`                                         | Whether to use a Playwright browser fallback when normal download fails.     |
+| `browser_headless`                                         | Whether the fallback browser runs in headless mode.                          |
+| `browser_channel`                                          | Chromium channel, for example `chrome`.                                      |
+| `browser_user_data_dir`                                    | Browser user data directory.                                                 |
+| `browser_wait_seconds`                                     | Wait time before retrying when a challenge page is detected.                 |
 
-### Search parameters
+#### Search parameters
 
 ```python
 await client.search(
@@ -327,15 +320,15 @@ await client.search(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `query` | Optional keyword query. Matching is performed locally on title, abstract, authors, categories, and related fields. |
-| `from_date` / `to_date` | API scan date range in `YYYY-MM-DD` format. `to_date=None` means today. |
-| `max_scan_results` | Maximum number of source records to scan, which prevents very large date ranges from becoming too slow. |
-| `page_size` | Number of records per API request. |
-| `deduplicate` | Deduplicate results. |
+| Parameter                                                    | Description                                                                                                                 |
+| ---                                                          | ---                                                                                                                         |
+| `query`                                                      | Optional keyword query. Matching is performed locally on title, abstract, authors, categories, and related fields.          |
+| `from_date` / `to_date`                                      | API scan date range in `YYYY-MM-DD` format. `to_date=None` means today.                                                     |
+| `max_scan_results`                                           | Maximum number of source records to scan, which prevents very large date ranges from becoming too slow.                     |
+| `page_size`                                                  | Number of records per API request.                                                                                          |
+| `deduplicate`                                                | Deduplicate results.                                                                                                        |
 
-### Examples
+#### Examples
 
 Search and download from bioRxiv:
 
@@ -377,7 +370,7 @@ Import:
 from paperdl.modules import PMLRPaperClient
 ```
 
-### Search parameters
+#### Search parameters
 
 ```python
 await client.search(
@@ -390,15 +383,15 @@ await client.search(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `query` | Optional keyword query. Matching uses title, abstract, authors, venue, and related fields. |
-| `volume_ids` | Selected PMLR volumes, for example `[235, 238]`. |
-| `max_volumes` | When `volume_ids` is not provided, scan this many recent volumes. |
-| `enrich_abstracts` | Visit paper detail pages to enrich abstracts, PDF URLs, authors, year, and other metadata. |
-| `deduplicate` | Deduplicate results. |
+| Parameter                              | Description                                                                                                             |
+| ---                                    | ---                                                                                                                     |
+| `query`                                | Optional keyword query. Matching uses title, abstract, authors, venue, and related fields.                              |
+| `volume_ids`                           | Selected PMLR volumes, for example `[235, 238]`.                                                                        |
+| `max_volumes`                          | When `volume_ids` is not provided, scan this many recent volumes.                                                       |
+| `enrich_abstracts`                     | Visit paper detail pages to enrich abstracts, PDF URLs, authors, year, and other metadata.                              |
+| `deduplicate`                          | Deduplicate results.                                                                                                    |
 
-### Examples
+#### Examples
 
 Search recent volumes:
 
@@ -449,16 +442,16 @@ Import:
 from paperdl.modules import PMCOAPaperClient
 ```
 
-### Additional constructor parameters
+#### Additional constructor parameters
 
-| Parameter | Description |
-| --- | --- |
-| `tool` | Tool name passed to NCBI E-utilities. |
-| `email` | Email passed to NCBI E-utilities. |
-| `api_key` | NCBI API key. |
-| `api_delay` | Wait time between paginated API requests. |
+| Parameter                            | Description                                 |
+| ---                                  | ---                                         |
+| `tool`                               | Tool name passed to NCBI E-utilities.       |
+| `email`                              | Email passed to NCBI E-utilities.           |
+| `api_key`                            | NCBI API key.                               |
+| `api_delay`                          | Wait time between paginated API requests.   |
 
-### Search parameters
+#### Search parameters
 
 ```python
 await client.search(
@@ -471,16 +464,16 @@ await client.search(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `query` | PMC search query. The client automatically applies an open-access filter. |
-| `total_results` | Maximum number of returned papers. |
-| `page_size` | Number of results per API page. Internally capped at 200. |
-| `sort` | NCBI search sort field. Default: `relevance`. |
-| `require_pdf` | Keep only records with an open-access PDF download link. |
-| `deduplicate` | Deduplicate results. |
+| Parameter                                 | Description                                                                        |
+| ---                                       | ---                                                                                |
+| `query`                                   | PMC search query. The client automatically applies an open-access filter.          |
+| `total_results`                           | Maximum number of returned papers.                                                 |
+| `page_size`                               | Number of results per API page. Internally capped at 200.                          |
+| `sort`                                    | NCBI search sort field. Default: `relevance`.                                      |
+| `require_pdf`                             | Keep only records with an open-access PDF download link.                           |
+| `deduplicate`                             | Deduplicate results.                                                               |
 
-### Examples
+#### Examples
 
 Search PMC Open Access:
 
@@ -558,20 +551,20 @@ for source, papers in results.items():
 
 Every search result is a `PaperInfo` object:
 
-| Field | Description |
-| --- | --- |
-| `source` | Source client, for example `ArxivPaperClient`. |
-| `title` | Paper title. |
-| `abstract` | Abstract text. |
-| `authors` | Author list. |
-| `article_url` | Paper detail page. |
-| `download_url` | PDF download URL. |
-| `doi` / `arxiv_id` | DOI or arXiv ID. |
-| `venue` / `publisher` | Conference, journal, or publisher. |
-| `published_at` / `updated_at` | Publication and update timestamps. |
-| `source_id` | Source-specific internal ID. |
-| `keywords` / `categories` / `tags` | Keywords, categories, and tags. |
-| `extra` | Source-specific metadata. |
+| Field                                        | Description                                            |
+| ---                                          | ---                                                    |
+| `source`                                     | Source client, for example `ArxivPaperClient`.         |
+| `title`                                      | Paper title.                                           |
+| `abstract`                                   | Abstract text.                                         |
+| `authors`                                    | Author list.                                           |
+| `article_url`                                | Paper detail page.                                     |
+| `download_url`                               | PDF download URL.                                      |
+| `doi` / `arxiv_id`                           | DOI or arXiv ID.                                       |
+| `venue` / `publisher`                        | Conference, journal, or publisher.                     |
+| `published_at` / `updated_at`                | Publication and update timestamps.                     |
+| `source_id`                                  | Source-specific internal ID.                           |
+| `keywords` / `categories` / `tags`           | Keywords, categories, and tags.                        |
+| `extra`                                      | Source-specific metadata.                              |
 
 Useful methods and properties:
 
