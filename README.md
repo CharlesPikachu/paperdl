@@ -491,7 +491,13 @@ If you use this project in your research, please cite the repository.
 
 # 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=CharlesPikachu/paperdl&type=date&legend=top-left)](https://www.star-history.com/#CharlesPikachu/paperdl&type=date&legend=top-left)
+<a href="https://www.star-history.com/?type=date&legend=top-left&repos=CharlesPikachu%2Fpaperdl">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=CharlesPikachu/paperdl&type=date&theme=dark&legend=top-left&sealed_token=zPDma2kfAWTEyIk6BTvjoF4X8xNmojKB9agKrHU0vU-I3mxfo5Lcu5mjER5ai76vIAPjj0wUB9j89Z-lLPEinavU23J6qqF4LNmjsc-3yOlvdUpldHuF1g" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=CharlesPikachu/paperdl&type=date&legend=top-left&sealed_token=zPDma2kfAWTEyIk6BTvjoF4X8xNmojKB9agKrHU0vU-I3mxfo5Lcu5mjER5ai76vIAPjj0wUB9j89Z-lLPEinavU23J6qqF4LNmjsc-3yOlvdUpldHuF1g" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=CharlesPikachu/paperdl&type=date&legend=top-left&sealed_token=zPDma2kfAWTEyIk6BTvjoF4X8xNmojKB9agKrHU0vU-I3mxfo5Lcu5mjER5ai76vIAPjj0wUB9j89Z-lLPEinavU23J6qqF4LNmjsc-3yOlvdUpldHuF1g" />
+ </picture>
+</a>
 
 
 # ☕ Appreciation (赞赏 / 打赏)
